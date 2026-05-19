@@ -135,9 +135,10 @@
     .day-card.current { border-color: var(--g400); }
     .day-card.done { border-color: var(--g300); background: var(--g50); }
     .day-card.locked { opacity: .55; cursor: not-allowed; }
-    .dc-icon { width: 48px; height: 48px; border-radius: 13px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 23px; }
+    .dc-icon { width: 48px; height: 48px; border-radius: 13px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 23px; overflow: hidden; }
     .dc-icon.unlocked { background: var(--g100); }
     .dc-icon.locked-icon { background: var(--gray100); }
+    .dc-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 13px; }
     .dc-info { flex: 1; min-width: 0; }
     .dc-num { font-size: 10px; font-weight: 700; color: var(--gray400); text-transform: uppercase; }
     .dc-title { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -172,6 +173,7 @@
     .prep-list li:last-child { border-bottom: none; }
     .step-n { width: 22px; height: 22px; border-radius: 50%; background: var(--g400); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
     .tip-box { background: var(--g50); border-left: 4px solid var(--g400); border-radius: 0 12px 12px 0; padding: 15px; font-size: 14px; color: var(--gray700); line-height: 1.65; }
+    .day-photo { width: 100%; height: 200px; object-fit: cover; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 13px; display: block; }
     .complete-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--g100); padding: 12px 16px; z-index: 200; }
     .btn-complete { width: 100%; padding: 15px; border: none; border-radius: 13px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .2s; }
     .btn-complete.todo { background: linear-gradient(135deg, var(--g700), var(--g400)); color: white; }
@@ -309,6 +311,7 @@
     <p class="dh-sub" id="dh-sub">Subtítulo</p>
   </div>
   <div class="day-body">
+    <img id="day-photo" class="day-photo" src="" alt="" />
     <div class="info-card"><div class="card-header"><div class="card-ico">🛒</div><span class="card-title">Ingredientes</span></div><ul class="ing-list" id="ing-list"></ul></div>
     <div class="info-card"><div class="card-header"><div class="card-ico">👩‍🍳</div><span class="card-title">Modo de Preparo</span></div><ol class="prep-list" id="prep-list"></ol></div>
     <div class="info-card"><div class="card-header"><div class="card-ico">💡</div><span class="card-title">Dica Nutricional</span></div><div class="tip-box" id="tip-box"></div></div>
@@ -414,31 +417,31 @@ function initSupabase() {
 }
 
 const DAYS = [
-  { n:1, emoji:'🥤', title:'Suco Verde Detox', sub:'Ativação do sistema digestivo em jejum',
+  { n:1, img:'../dia1_suco_verde.png', emoji:'🥤', title:'Suco Verde Detox', sub:'Ativação do sistema digestivo em jejum',
     ingredients:['1 fatia de abacaxi','70 g de mamão papaia (ou kiwi)','1 a 2 folhas de couve','300 ml de água (ou 200 ml de água de coco + 100 ml de água)','Opcional: gengibre, hortelã, pepino, agrião'],
     prep:['Lave bem todos os ingredientes.','Corte o abacaxi e pique o mamão.','Coloque tudo no liquidificador com a água.','Bata 1–2 minutos até ficar homogêneo.','NÃO peneirar — as fibras são essenciais.','Beba em jejum. Aguarde 20 min antes do café.'],
     tip:'O suco verde em jejum ativa as enzimas digestivas e fornece clorofila da couve, que quelata metais pesados. O abacaxi contém bromelina, uma enzima anti-inflamatória com mais de 1.600 estudos. Beba devagar, em pequenos goles.' },
-  { n:2, emoji:'🍲', title:'Caldo de Ossos Curativo', sub:'Reparação e selagem da mucosa intestinal',
+  { n:2, img:'../dia2_caldo_ossos.png', emoji:'🍲', title:'Caldo de Ossos Curativo', sub:'Reparação e selagem da mucosa intestinal',
     ingredients:['1 kg de pé de frango limpo','2 talos de aipo (salsão)','2 cenouras médias','1 cebola média','4 dentes de alho','3 raminhos de tomilho fresco','Salsinha e cebolinha a gosto','2 folhas de louro','1 col. chá de orégano','1 col. chá de sal marinho','2 col. sopa de vinagre de maçã','2 litros de água filtrada'],
     prep:['Coloque o frango, a água e o vinagre na panela de pressão com fogo DESLIGADO.','Deixe de molho 30 min — o vinagre extrai minerais dos ossos.','Acrescente todos os outros ingredientes.','Leve ao fogo. Após pegar pressão, reduza ao mínimo.','Cozinhe por 2 horas. Adicione água se necessário.','Remova os ossos, coe e sirva. Guarde em potes de vidro.'],
     tip:'O caldo de ossos é rico em colágeno, glicina e glutamina — que selam a permeabilidade intestinal e nutrem os enterócitos. O vinagre de maçã aumenta em até 213% a extração de cálcio e magnésio dos ossos.' },
-  { n:3, emoji:'🥞', title:'Panqueca de Banana', sub:'Proteína saudável com carboidrato gentil',
+  { n:3, img:'../dia3_panqueca_banana.png', emoji:'🥞', title:'Panqueca de Banana', sub:'Proteína saudável com carboidrato gentil',
     ingredients:['2 ovos inteiros','1 banana pequena bem madura','2 col. sopa de farelo de aveia','Canela em pó a gosto','Gotas de stevia (opcional)','Azeite ou manteiga ghee para untar'],
     prep:['Amasse a banana com garfo até virar purê liso.','Adicione os ovos e misture bem.','Junte aveia, canela e stevia. Incorpore.','Aqueça frigideira em fogo médio-baixo com azeite.','Despeje formando discos de ±8 cm. Tampe.','Após 2–3 min, vire e doure por mais 1–2 min.'],
     tip:'A banana madura tem menor índice glicêmico quando consumida com gordura e proteína. O farelo de aveia tem beta-glucana, fibra solúvel que alimenta bactérias benéficas e reduz colesterol.' },
-  { n:4, emoji:'🥗', title:'Suco Pepino-Hortelã + Ovos', sub:'Drenagem linfática e energia sustentada',
+  { n:4, img:'../dia4_suco_pepino.png', emoji:'🥗', title:'Suco Pepino-Hortelã + Ovos', sub:'Drenagem linfática e energia sustentada',
     ingredients:['── SUCO ──','1 folha de couve','1 rodela de abacaxi','1 pedaço pequeno de gengibre','5 rodelas de pepino com casca','5 folhas de hortelã','200 ml de água','── OVOS ──','2 ovos','Sal, pimenta e cúrcuma a gosto','1 fio de azeite'],
     prep:['SUCO: bata todos os ingredientes no liquidificador. Beba sem peneirar.','OVOS: bata os ovos com sal, pimenta e cúrcuma.','Aqueça frigideira em fogo BAIXO com azeite.','Despeje e mexa delicadamente com espátula.','Retire do fogo levemente úmidos.','Sirva o suco e os ovos juntos.'],
     tip:'O pepino tem ação diurética e é 96% água. A hortelã relaxa a musculatura intestinal, aliviando gases. A cúrcuma + pimenta-do-reino aumenta a absorção da curcumina em até 2.000%.' },
-  { n:5, emoji:'🥣', title:'Mingau de Claras com Frutas', sub:'Reconforto quente, digestão suave',
+  { n:5, img:'../dia5_mingau_claras.png', emoji:'🥣', title:'Mingau de Claras com Frutas', sub:'Reconforto quente, digestão suave',
     ingredients:['2 col. sopa de farelo de aveia (±30 g)','200 ml de água ou leite vegetal','3 claras de ovos','1 fruta cozida: ½ maçã, pêra, banana, 10 morangos ou 1 rodela de abacaxi','Canela em pó a gosto','Cardamomo e erva-doce — 1 pitada cada'],
     prep:['Cozinhe a fruta picada com especiarias em pouca água até amolecer.','Misture aveia e água numa panela. Fogo médio, mexendo sempre.','Quando engrossar e ferver, acrescente as 3 claras.','Mexa rapidamente por 1 min — as claras cremificam o mingau.','Retire, tampe e descanse 3 min.','Monte: mingau na base, fruta cozida por cima e mais canela.'],
     tip:'Claras têm score PDCAAS 1,0 — a maior pontuação de qualidade proteica possível. A fruta COZIDA tem fibras pré-digeridas pelo calor, reduzindo fermentação e gases no intestino.' },
-  { n:6, emoji:'🍛', title:'Kichari Ayurvédico', sub:'Receita milenar de detox e equilíbrio',
+  { n:6, img:'../dia6_kichari.png', emoji:'🍛', title:'Kichari Ayurvédico', sub:'Receita milenar de detox e equilíbrio',
     ingredients:['40 g de lentilha rosa (molho na véspera)','50 g de arroz basmati','100 g de chuchu picado','100 g de abobrinha picada','1 col. chá de manteiga ghee ou azeite','½ col. chá de sementes de erva-doce','½ col. chá de sementes de cominho','½ col. chá de gengibre fresco ralado','½ col. chá de açafrão/cúrcuma em pó','½ col. chá de coentro em pó','Sal marinho a gosto'],
     prep:['VÉSPERA: lentilha de molho em água fria por 8h. Escorra antes de usar.','Aqueça ghee. Adicione sementes de erva-doce e cominho. Doure 1 min.','Adicione arroz, lentilha e demais temperos. Refogue 2 min.','Cubra com água (cobrir + 3 cm). Leve à fervura.','Quando ferver, adicione chuchu e abobrinha. Reduza o fogo.','Cozinhe mexendo às vezes até ficar cremoso (15–20 min).'],
     tip:'Na medicina ayurvédica, o Kichari é "o alimento perfeito": arroz + lentilha formam proteína completa de fácil digestão. A curcumina inibe o fator NF-kB, principal regulador da inflamação crônica — com mais de 6.000 estudos publicados.' },
-  { n:7, emoji:'🎉', title:'Tapioca de Frango Detox', sub:'Parabéns! Você chegou ao Dia 7!',
+  { n:7, img:'../dia7_tapioca_frango.png', emoji:'🎉', title:'Tapioca de Frango Detox', sub:'Parabéns! Você chegou ao Dia 7!',
     ingredients:['2 col. sopa de goma de tapioca (±40 g)','1 col. rasa de sementes de chia','80 g de frango desfiado cozido','1 tomate pequeno picado','Salsinha, cebolinha, cúrcuma, orégano, sal a gosto','Opcional: pepino e folhas verdes para acompanhar'],
     prep:['Cozinhe o frango com temperos, desfie e misture com tomate e ervas.','Misture goma de tapioca com chia em um prato.','Forre frigideira antiaderente (sem untar) com essa mistura.','Fogo baixo, sem mexer, até firmar e soltar (2–3 min).','Vire — a chia cria textura crocante por fora.','Recheie com o frango e feche ao meio. Comemore! 🎉'],
     tip:'🌟 PARABÉNS pelos 7 dias! A chia forma um gel mucilaginoso protetor para a mucosa intestinal e é rica em ômega-3 ALA anti-inflamatório. A tapioca é um dos carboidratos mais gentis para a digestão — você merece essa celebração!' },
@@ -618,7 +621,10 @@ function renderDashboard() {
     const isU = day.n===1 || completedDays.has(day.n-1) || isC;
     const card = document.createElement('div');
     card.className = 'day-card'+(isC?' done':'')+((!isU)?' locked':'')+(isU&&!isC?' current':'');
-    card.innerHTML = `<div class="dc-icon ${isU?'unlocked':'locked-icon'}">${isU?day.emoji:'🔒'}</div><div class="dc-info"><div class="dc-num">Dia ${day.n}</div><div class="dc-title">${day.title}</div><div class="dc-sub">${day.sub}</div></div><div class="dc-badge ${isC?'done-b':(!isU?'lock-b':'todo-b')}">${isC?'✓':(!isU?'🔒':'→')}</div>`;
+    const iconContent = isU
+      ? `<img src="${day.img}" alt="${day.title}" onerror="this.replaceWith(document.createTextNode('${day.emoji}'))">`
+      : '🔒';
+    card.innerHTML = `<div class="dc-icon ${isU?'unlocked':'locked-icon'}">${iconContent}</div><div class="dc-info"><div class="dc-num">Dia ${day.n}</div><div class="dc-title">${day.title}</div><div class="dc-sub">${day.sub}</div></div><div class="dc-badge ${isC?'done-b':(!isU?'lock-b':'todo-b')}">${isC?'✓':(!isU?'🔒':'→')}</div>`;
     if (isU) card.onclick = () => openDay(day.n);
     list.appendChild(card);
   });
@@ -634,6 +640,9 @@ function openDay(n) {
   document.getElementById('dh-badge').textContent = 'DIA '+n+' DE 7';
   document.getElementById('dh-title').textContent = d.title;
   document.getElementById('dh-sub').textContent   = d.sub;
+  const photoEl = document.getElementById('day-photo');
+  if (photoEl) { photoEl.src = d.img; photoEl.alt = d.title; }
+
   const ingEl = document.getElementById('ing-list');
   ingEl.innerHTML = '';
   d.ingredients.forEach(item => {
