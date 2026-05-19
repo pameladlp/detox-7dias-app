@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detox 7 Dias — Fase de Ataque</title>
+  <style>
+    :root {
+      --g900: #1B4332;
+      --g700: #2D6A4F;
+      --g500: #40916C;
+      --g400: #52B788;
+      --g300: #74C69D;
+      --g200: #B7E4C7;
+      --g100: #D8F3DC;
+      --g50:  #F0FBF4;
+      --white: #FFFFFF;
+      --gray100: #F3F4F6;
+      --gray300: #D1D5DB;
+      --gray400: #9CA3AF;
+      --gray500: #6B7280;
+      --gray700: #374151;
+      --gray900: #111827;
+      --radius: 16px;
+      --shadow: 0 2px 16px rgba(45,106,79,0.10);
+      --shadow-lg: 0 6px 32px rgba(45,106,79,0.16);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--g50);
+      color: var(--gray900);
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── SCREENS ─────────────────────────────────── */
+    .screen { display: none; animation: fadeIn 0.25s ease; }
+    .screen.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    /* ── LOGIN ───────────────────────────────────── */
+    #screen-login {
+      display: none;
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--g700) 0%, var(--g400) 100%);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    #screen-login.active { display: flex; }
+
+    .login-card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px 32px 36px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+
+    .login-logo { font-size: 52px; margin-bottom: 6px; display: block; }
+    .login-title { font-size: 26px; font-weight: 800; color: var(--g700); margin-bottom: 4px; }
+    .login-sub { font-size: 13px; color: var(--gray400); margin-bottom: 32px; }
+
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--gray500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; }
+    .form-group input {
+      width: 100%; padding: 13px 16px;
+      border: 2px solid var(--g100); border-radius: 12px;
+      font-size: 15px; outline: none;
+      background: var(--g50); color: var(--gray900);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .form-group input:focus { border-color: var(--g400); background: white; }
+
+    .btn-primary {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, var(--g700), var(--g400));
+      color: white; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      margin-top: 8px; transition: opacity 0.2s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-primary:active { transform: none; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .login-note { font-size: 12px; color: var(--gray400); margin-top: 16px; line-height: 1.5; }
+
+    /* ── HEADER ──────────────────────────────────── */
+    .app-header {
+      background: white; border-bottom: 1px solid var(--g100);
+      padding: 0 20px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .header-brand { font-size: 18px; font-weight: 800; color: var(--g700); }
+    .header-back {
+      background: var(--g50); border: none; border-radius: 10px;
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 20px; color: var(--g700); transition: background 0.15s;
+    }
+    .header-back:hover { background: var(--g100); }
+    .header-right { font-size: 13px; color: var(--gray400); cursor: pointer; }
+    .header-right:hover { color: var(--g500); }
+
+    /* ── DASHBOARD ───────────────────────────────── */
+    .dashboard-body { padding: 20px; max-width: 520px; margin: 0 auto; }
+
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--g900), var(--g500));
+      border-radius: 22px; padding: 24px 22px 22px; color: white;
+      margin-bottom: 24px;
+    }
+    .wb-greeting { font-size: 13px; opacity: 0.75; margin-bottom: 2px; }
+    .wb-name { font-size: 22px; font-weight: 800; margin-bottom: 18px; }
+    .pb-wrap { background: rgba(255,255,255,0.25); border-radius: 20px; height: 8px; overflow: hidden; }
+    .pb-fill { height: 100%; background: white; border-radius: 20px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+    .pb-label { font-size: 12px; opacity: 0.8; margin-top: 7px; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; color: var(--gray400);
+      text-transform: uppercase; letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+
+    .days-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .day-card {
+      background: white; border-radius: var(--radius); padding: 16px 18px;
+      display: flex; align-items: center; gap: 14px;
+      box-shadow: var(--shadow); cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.2s;
+    }
+    .day-card:hover:not(.locked) { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .day-card.current { border-color: var(--g400); }
+    .day-card.done { border-color: var(--g300); background: var(--g50); }
+    .day-card.locked { opacity: 0.55; cursor: not-allowed; }
+
+    .dc-icon {
+      width: 50px; height: 50px; border-radius: 14px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 24px;
+    }
+    .dc-icon.unlocked { background: var(--g100); }
+    .dc-icon.locked-icon { background: var(--gray100); }
+
+    .dc-info { flex: 1; min-width: 0; }
+    .dc-num { font-size: 11px; font-weight: 700; color: var(--gray400); text-transform: uppercase; letter-spacing: 0.4px; }
+    .dc-title { font-size: 15px; font-weight: 700; color: var(--gray900); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dc-sub { font-size: 12px; color: var(--gray400); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .dc-badge {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 14px;
+    }
+    .dc-badge.done-b { background: var(--g400); color: white; }
+    .dc-badge.todo-b { background: var(--g100); color: var(--g500); }
+    .dc-badge.lock-b { background: var(--gray100); color: var(--gray400); }
+
+    /* ── DAY DETAIL ──────────────────────────────── */
+    #screen-day { padding-bottom: 88px; }
+
+    .day-hero {
+      background: linear-gradient(160deg, var(--g900) 0%, var(--g500) 100%);
+      padding: 28px 24px 52px; color: white; text-align: center;
+    }
+    .dh-emoji { font-size: 60px; margin-bottom: 8px; display: block; }
+    .dh-badge {
+      display: inline-block; background: rgba(255,255,255,0.2);
+      border-radius: 100px; padding: 4px 14px; font-size: 11px;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+    }
+    .dh-title { font-size: 22px; font-weight: 800; line-height: 1.3; }
+    .dh-sub { font-size: 13px; opacity: 0.75; margin-top: 6px; }
+
+    .day-body { padding: 0 16px; max-width: 520px; margin: -28px auto 0; }
+
+    .info-card {
+      background: white; border-radius: var(--radius); padding: 20px;
+      margin-bottom: 14px; box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+    }
+    .card-ico {
+      width: 34px; height: 34px; border-radius: 10px; background: var(--g100);
+      display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0;
+    }
+    .card-title { font-size: 14px; font-weight: 700; color: var(--g700); }
+
+    .ing-list { list-style: none; }
+    .ing-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid var(--g50);
+      font-size: 14px; color: var(--gray700); line-height: 1.4;
+    }
+    .ing-list li:last-child { border-bottom: none; }
+    .ing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--g400); margin-top: 7px; flex-shrink: 0; }
+    .ing-section-head { font-weight: 700; color: var(--g700); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 0 4px; }
+
+    .prep-list { list-style: none; }
+    .prep-list li {
+      display: flex; gap: 12px; padding: 10px 0;
+      border-bottom: 1px solid var(--g50); font-size: 14px; color: var(--gray700); line-height: 1.5;
+    }
+    .prep-list li:last-child { border-bottom: none; }
+    .step-n {
+      width: 22px; height: 22px; border-radius: 50%; background: var(--g400); color: white;
+      font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    .tip-box {
+      background: var(--g50); border-left: 4px solid var(--g400);
+      border-radius: 0 12px 12px 0; padding: 16px;
+      font-size: 14px; color: var(--gray700); line-height: 1.65;
+    }
+
+    /* ── COMPLETE BAR ────────────────────────────── */
+    .complete-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: white; border-top: 1px solid var(--g100);
+      padding: 12px 16px; z-index: 200;
+    }
+    .btn-complete {
+      width: 100%; padding: 15px; border: none; border-radius: 14px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-complete.todo {
+      background: linear-gradient(135deg, var(--g700), var(--g400)); color: white;
+    }
+    .btn-complete.todo:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-complete.done-btn { background: var(--g100); color: var(--g700); cursor: default; }
+    .btn-complete:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+
+    /* ── TOAST ───────────────────────────────────── */
+    .toast {
+      position: fixed; top: 16px; left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: var(--g900); color: white;
+      padding: 11px 22px; border-radius: 100px;
+      font-size: 14px; font-weight: 600; z-index: 999;
+      transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+      white-space: nowrap; pointer-events: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── LOADER ──────────────────────────────────── */
+    .loader {
+      display: inline-block; width: 17px; height: 17px;
+      border: 2px solid rgba(255,255,255,0.35); border-top-color: white;
+      border-radius: 50%; animation: spin 0.65s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── EMPTY STATE ─────────────────────────────── */
+    .all-done-banner {
+      background: linear-gradient(135deg, #ffecd2, #fcb69f);
+      border-radius: 18px; padding: 22px; text-align: center;
+      margin-top: 8px; margin-bottom: 16px;
+    }
+    .all-done-banner .emoji { font-size: 40px; display: block; margin-bottom: 8px; }
+    .all-done-banner p { font-size: 15px; font-weight: 600; color: #7c3626; }
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════
+     TELA: LOGIN
+════════════════════════════════════════════════ -->
+<div id="screen-login" class="screen">
+  <div class="login-card">
+    <span class="login-logo">🌿</span>
+    <h1 class="login-title">Detox 7 Dias</h1>
+    <p class="login-sub">Fase de Ataque — Detox + Limpeza Intestinal</p>
+
+    <div class="form-group">
+      <label>Seu nome</label>
+      <input type="text" id="inp-name" placeholder="Como quer ser chamada?" autocomplete="name" />
+    </div>
+    <div class="form-group">
+      <label>E-mail</label>
+      <input type="email" id="inp-email" placeholder="seu@email.com" autocomplete="email" />
+    </div>
+    <div class="form-group">
+      <label>Senha</label>
+      <input type="password" id="inp-password" placeholder="Mínimo 6 caracteres" autocomplete="current-password" />
+    </div>
+    <button class="btn-primary" id="btn-login" onclick="handleLogin()">
+      Começar minha jornada →
+    </button>
+    <p class="login-note">Primeira vez? Sua conta é criada automaticamente.<br>Já tem conta? Usa o mesmo e-mail e senha para entrar.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TELA: DASHBOARD
+════════════════════════════════════════════════ -->
+<div id="screen-dashboard" class="screen">
+  <div class="app-header">
+    <div class="header-left">
+      <span style="font-size:22px">🌿</span>
+      <span class="header-brand">Detox 7 Dias</span>
+    </div>
+    <span class="header-right" id="hdr-user" onclick="handleLogout()">Sair</span>
+  </div>
+
+  <div class="dashboard-body">
+    <div class="welcome-banner">
+      <p class="wb-greeting">Olá,</p>
+      <p class="wb-name" id="wb-name">…</p>
+      <div class="pb-wrap"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div>
+      <p class="pb-label" id="pb-label">0 de 7 dias concluídos</p>
+    </div>
+
+    <div id="all-done-wrap" style="display:none">
+      <div class="all-done-banner">
+        <span class="emoji">🎉</span>
+        <p>Você concluiu os 7 dias da Fase de Ataque!<br>Parabéns pela dedicação!</p>
+      </div>
+    </div>
+
+    <p class="section-label">Seus 7 dias</p>
+    <div class="days-list" id="days-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TELA: DIA DETALHADO
+════════════════════════════════════════════════ -->
+<div id="screen-day" class="screen">
+  <div class="app-header">
+    <div class="header-left">
+      <button class="header-back" onclick="goBack()">←</button>
+      <span class="header-brand" id="day-hdr">Dia 1</span>
+    </div>
+  </div>
+
+  <div class="day-hero">
+    <span class="dh-emoji" id="dh-emoji">🥤</span>
+    <span class="dh-badge" id="dh-badge">DIA 1 DE 7</span>
+    <h2 class="dh-title" id="dh-title">Receita</h2>
+    <p class="dh-sub" id="dh-sub">Subtítulo</p>
+  </div>
+
+  <div class="day-body">
+    <!-- Ingredientes -->
+    <div class="info-card">
+      <div class="card-header">
+        <div class="card-ico">🛒</div>
+        <span class="card-title">Ingredientes</span>
+      </div>
+      <ul class="ing-list" id="ing-list"></ul>
+    </div>
+
+    <!-- Preparo -->
+    <div class="info-card">
+      <div class="card-header">
+        <div class="card-ico">👩‍🍳</div>
+        <span class="card-title">Modo de Preparo</span>
+      </div>
+      <ol class="prep-list" id="prep-list"></ol>
+    </div>
+
+    <!-- Dica -->
+    <div class="info-card">
+      <div class="card-header">
+        <div class="card-ico">💡</div>
+        <span class="card-title">Dica Nutricional</span>
+      </div>
+      <div class="tip-box" id="tip-box"></div>
+    </div>
+  </div>
+
+  <div class="complete-bar">
+    <button class="btn-complete todo" id="btn-complete" onclick="markComplete()">
+      ✓ Completei o dia de hoje!
+    </button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIGURAÇÃO SUPABASE
+// Substitua com suas credenciais em https://supabase.com
+// ═══════════════════════════════════════════════════════════════
+const SUPABASE_URL      = 'https://ybvstcviymjmswoqwjbi.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_fMQoebpe_lMS1RfEAwhOwQ_nLfJj8SF';
+
+let sb = null;
+
+function initSupabase() {
+  try {
+    if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && window.supabase) {
+      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+  } catch(e) { console.warn('Supabase não configurado, usando localStorage.'); }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DADOS DOS 7 DIAS
+// ═══════════════════════════════════════════════════════════════
+const DAYS = [
+  {
+    n: 1,
+    emoji: '🥤',
+    title: 'Suco Verde Detox',
+    sub: 'Ativação do sistema digestivo em jejum',
+    ingredients: [
+      '1 fatia de abacaxi',
+      '70 g de mamão papaia (pode substituir por kiwi)',
+      '1 a 2 folhas de couve',
+      '300 ml de água (ou 200 ml de água de coco + 100 ml de água)',
+      'Opcional: lascas de gengibre, folhas de hortelã, rodelas de pepino, agrião',
+    ],
+    prep: [
+      'Lave bem todos os ingredientes em água corrente.',
+      'Corte o abacaxi em pedaços e pique o mamão grosseiramente.',
+      'Coloque tudo no liquidificador com a água.',
+      'Bata por 1 a 2 minutos até ficar completamente homogêneo.',
+      'NÃO peneirar — as fibras são fundamentais para o processo detox.',
+      'Beba em jejum. Aguarde 20 minutos antes do café da manhã.',
+    ],
+    tip: 'O suco verde em jejum ativa as enzimas digestivas e fornece clorofila da couve, que quelata (se liga a) metais pesados facilitando sua eliminação. O abacaxi contém bromelina, uma enzima anti-inflamatória com mais de 1.600 estudos científicos publicados. Beba devagar, em pequenos goles.',
+  },
+  {
+    n: 2,
+    emoji: '🍲',
+    title: 'Caldo de Ossos Curativo',
+    sub: 'Reparação e selagem da mucosa intestinal',
+    ingredients: [
+      '1 kg de pé de frango limpo',
+      '2 talos de aipo (salsão)',
+      '2 cenouras médias',
+      '1 cebola média',
+      '4 dentes de alho',
+      '3 raminhos de tomilho fresco',
+      'Salsinha e cebolinha a gosto',
+      '2 folhas de louro',
+      '1 colher de chá de orégano',
+      '1 colher de chá de sal marinho',
+      '2 colheres de sopa de vinagre de maçã',
+      '2 litros de água filtrada',
+    ],
+    prep: [
+      'Coloque os pés de frango, a água e o vinagre na panela de pressão com fogo DESLIGADO.',
+      'Deixe de molho por 30 minutos — o vinagre extrai minerais dos ossos.',
+      'Acrescente todos os outros ingredientes e leve ao fogo alto.',
+      'Após a panela pegar pressão, reduza o fogo ao mínimo.',
+      'Cozinhe por 2 horas. Adicione água se for secando.',
+      'Desligue, aguarde sair a pressão, remova os ossos e coe tudo.',
+      'Sirva quente. Armazene em potes de vidro (geladeira: 5 dias; freezer: 5 meses).',
+    ],
+    tip: 'O caldo de ossos é rico em colágeno hidrolisado, glicina e glutamina — aminoácidos que selam a permeabilidade intestinal ("leaky gut") e nutrem os enterócitos. O vinagre de maçã aumenta em até 213% a extração de cálcio, magnésio e fósforo dos ossos durante o cozimento.',
+  },
+  {
+    n: 3,
+    emoji: '🥞',
+    title: 'Panqueca de Banana',
+    sub: 'Proteína saudável com carboidrato gentil',
+    ingredients: [
+      '2 ovos inteiros',
+      '1 banana pequena bem madura',
+      '2 colheres de sopa de farelo de aveia',
+      'Canela em pó a gosto',
+      'Gotas de adoçante stevia a gosto (opcional)',
+      '1 fio de azeite ou manteiga ghee para a frigideira',
+    ],
+    prep: [
+      'Amasse a banana com um garfo até virar purê bem liso.',
+      'Adicione os ovos e misture vigorosamente.',
+      'Junte o farelo de aveia, a canela e a stevia. Incorpore bem.',
+      'Aqueça a frigideira em fogo médio-baixo com azeite.',
+      'Despeje a massa formando discos de ± 8 cm.',
+      'Tampe e aguarde 2-3 min até firmar e soltar da frigideira.',
+      'Vire com cuidado e doure o outro lado por mais 1-2 min.',
+    ],
+    tip: 'A banana madura tem índice glicêmico menor do que se imagina quando consumida com gordura e proteína do ovo. O farelo de aveia (não o flocos) tem maior concentração de beta-glucana, a fibra solúvel mais estudada para redução de colesterol e alimentação de bactérias benéficas. Ótima opção para os dias 3 a 7.',
+  },
+  {
+    n: 4,
+    emoji: '🥗',
+    title: 'Suco Pepino-Hortelã + Ovos',
+    sub: 'Drenagem linfática e energia sustentada',
+    ingredients: [
+      '── SUCO DETOX ──',
+      '1 folha de couve',
+      '1 rodela de abacaxi',
+      '1 pedaço pequeno de gengibre (ou 1 col. chá ralado)',
+      '5 rodelas de pepino com casca',
+      '5 folhas de hortelã',
+      '200 ml de água filtrada',
+      '── OVOS MEXIDOS ──',
+      '2 ovos',
+      'Sal marinho e pimenta-do-reino a gosto',
+      '1 fio de azeite',
+      'Pitada de cúrcuma em pó (opcional)',
+    ],
+    prep: [
+      'SUCO: coloque todos os ingredientes do suco no liquidificador.',
+      'Bata bem e beba sem peneirar.',
+      'OVOS: bata os ovos em um bowl com sal, pimenta e cúrcuma.',
+      'Aqueça a frigideira em fogo BAIXO com o azeite.',
+      'Despeje os ovos e mexa delicadamente com espátula de silicone.',
+      'Retire do fogo enquanto ainda levemente úmidos.',
+      'Sirva o suco e os ovos juntos ou em sequência.',
+    ],
+    tip: 'O pepino contém cucurbitacinas, compostos com potente ação anti-inflamatória, e é 96% água — excelente diurético natural. A hortelã relaxa a musculatura lisa do intestino, aliviando cólicas e gases. A cúrcuma nos ovos ativa melhor sua curcumina quando combinada com pimenta-do-reino (piperina aumenta absorção em até 2.000%).',
+  },
+  {
+    n: 5,
+    emoji: '🥣',
+    title: 'Mingau de Claras com Frutas',
+    sub: 'Reconforto quente, digestão suave',
+    ingredients: [
+      '2 colheres de sopa de farelo de aveia (± 30 g)',
+      '200 ml de água (ou leite vegetal de coco ou amêndoas)',
+      '3 claras de ovos',
+      '1 fruta cozida: ½ maçã pequena, pêra, banana, 10 morangos ou 1 rodela de abacaxi',
+      'Canela em pó a gosto',
+      'Cardamomo em pó — 1 pitada',
+      'Erva-doce — 1 pitada',
+    ],
+    prep: [
+      'Pique a fruta em pedaços pequenos e cozinhe em pouca água com as especiarias até amolecer.',
+      'Em outra panela, combine a aveia e a água. Leve ao fogo médio mexendo sempre.',
+      'Quando engrossar e começar a ferver, acrescente as 3 claras.',
+      'Mexa rapidamente por 1 minuto — as claras cozinham e cremificam o mingau.',
+      'Retire do fogo, tampe e deixe descansar 3 minutos.',
+      'Monte o bowl: mingau na base e a fruta cozida por cima.',
+      'Finalize com mais canela e sirva bem quente.',
+    ],
+    tip: 'As claras têm score PDCAAS 1,0 — a maior pontuação possível de qualidade proteica. Como são quase puras proteínas e água, são muito fáceis de digerir, perfeitas para a fase de descanso intestinal. A fruta COZIDA tem fibras pré-digeridas pelo calor, reduzindo a fermentação no intestino e os gases associados.',
+  },
+  {
+    n: 6,
+    emoji: '🍛',
+    title: 'Kichari Ayurvédico',
+    sub: 'Receita milenar de detox e equilíbrio',
+    ingredients: [
+      '40 g de lentilha rosa (deixar de molho na noite anterior)',
+      '50 g de arroz basmati (ou arroz branco)',
+      '100 g de chuchu picado',
+      '100 g de abobrinha picada',
+      '1 col. chá de manteiga ghee (ou azeite)',
+      '½ col. chá de sementes de erva-doce',
+      '½ col. chá de sementes de cominho',
+      '½ col. chá de gengibre fresco ralado',
+      '½ col. chá de açafrão em pó (cúrcuma)',
+      '½ col. chá de coentro em pó',
+      'Sal marinho a gosto',
+      'Água filtrada (suficiente para cobrir + 3 cm)',
+    ],
+    prep: [
+      'NA VÉSPERA: deixe a lentilha de molho em água fria por 8 horas. Escorra antes de usar.',
+      'Aqueça o ghee na panela. Adicione sementes de erva-doce e cominho.',
+      'Mexa por 1 minuto até as sementes estourarem levemente e ficarem aromáticas.',
+      'Adicione o arroz e a lentilha. Refogue 2 minutos nas sementes.',
+      'Adicione os demais temperos (gengibre, açafrão, coentro, sal). Mexa.',
+      'Cubra com água (± 3 cm acima do nível dos grãos). Leve à fervura.',
+      'Quando ferver, adicione chuchu e abobrinha. Reduza ao fogo mínimo.',
+      'Cozinhe sem tampa, mexendo às vezes, até consistência cremosa (15-20 min).',
+    ],
+    tip: 'Na medicina ayurvédica, o Kichari é chamado de "o alimento perfeito": arroz e lentilha juntos formam uma proteína completa com todos os aminoácidos essenciais. A curcumina do açafrão tem mais de 6.000 estudos científicos e age como um dos mais potentes anti-inflamatórios naturais, inibindo o fator NF-kB, principal regulador da inflamação crônica.',
+  },
+  {
+    n: 7,
+    emoji: '🎉',
+    title: 'Tapioca de Frango Detox',
+    sub: 'Parabéns! Você chegou ao Dia 7!',
+    ingredients: [
+      '2 colheres de sopa de goma de tapioca (± 40 g)',
+      '1 colher rasa de sementes de chia',
+      '80 g de frango desfiado (cozido, temperado)',
+      '1 tomate pequeno picadinho',
+      'Salsinha e cebolinha a gosto',
+      'Cúrcuma, orégano, sal marinho a gosto',
+      'Opcional: rodelas de pepino e folhas verdes para acompanhar',
+    ],
+    prep: [
+      'Cozinhe o frango com temperos naturais, desfie e misture com tomate e ervas.',
+      'Num prato, misture a goma de tapioca com as sementes de chia.',
+      'Forre uma frigideira antiaderente (sem untar) com essa mistura.',
+      'Leve ao fogo baixo sem mexer até a tapioca firmar e soltar do fundo (2-3 min).',
+      'Vire com cuidado — a chia cria uma textura crocante por fora.',
+      'Retire do fogo, recheie com o frango e feche ao meio.',
+      'Sirva com o acompanhamento e celebre seus 7 dias concluídos! 🎉',
+    ],
+    tip: '🌟 PARABÉNS por completar a Fase de Ataque! Nestes 7 dias você reduziu a inflamação sistêmica, deu descanso ao seu intestino e começou a reequilibrar a microbiota. A chia é rica em ômega-3 ALA e forma um gel mucilaginoso que protege a mucosa intestinal. A tapioca (goma de mandioca) é um dos carboidratos mais gentis para a digestão — e você merece celebrar!',
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════════════════════
+let currentUser   = null;   // { name, email, id }
+let completedDays = new Set();
+let viewingDay    = null;
+
+// ═══════════════════════════════════════════════════════════════
+// UTILITÁRIOS
+// ═══════════════════════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function lsKey(email) { return 'detox7__' + email.toLowerCase(); }
+
+function lsSave() {
+  if (!currentUser) return;
+  localStorage.setItem(lsKey(currentUser.email), JSON.stringify({
+    name: currentUser.name,
+    email: currentUser.email,
+    id: currentUser.id,
+    done: [...completedDays],
+  }));
+}
+
+function lsLoad(email) {
+  const raw = localStorage.getItem(lsKey(email));
+  return raw ? JSON.parse(raw) : null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SUPABASE AUTH
+// ═══════════════════════════════════════════════════════════════
+async function sbSignIn(email, password) {
+  return sb.auth.signInWithPassword({ email, password });
+}
+
+async function sbSignUp(name, email, password) {
+  return sb.auth.signUp({ email, password, options: { data: { name } } });
+}
+
+async function sbUpsertProfile(name) {
+  if (!sb) return;
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return;
+  await sb.from('detox_profiles').upsert({ id: user.id, name }, { onConflict: 'id' });
+}
+
+async function sbLoadProgress() {
+  if (!sb) return [];
+  const { data } = await sb.from('detox_progress').select('day_number').eq('completed', true);
+  return (data || []).map(r => r.day_number);
+}
+
+async function sbSaveProgress(dayNum) {
+  if (!sb) return;
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return;
+  await sb.from('detox_progress').upsert(
+    { user_id: user.id, day_number: dayNum, completed: true, completed_at: new Date().toISOString() },
+    { onConflict: 'user_id,day_number' }
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════════════════════
+async function handleLogin() {
+  const name     = document.getElementById('inp-name').value.trim();
+  const email    = document.getElementById('inp-email').value.trim().toLowerCase();
+  const password = document.getElementById('inp-password').value;
+
+  if (!name)                              return showToast('⚠️ Digite seu nome!');
+  if (!email || !email.includes('@'))     return showToast('⚠️ E-mail inválido!');
+  if (!password || password.length < 6)  return showToast('⚠️ Senha com mínimo 6 caracteres!');
+
+  initSupabase();
+
+  const btn = document.getElementById('btn-login');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader"></span>&nbsp;Entrando…';
+
+  let done = [];
+  currentUser = { name, email, id: null };
+
+  try {
+    if (sb) {
+      // Tenta login; se falhar, cria conta nova
+      let { data, error } = await sbSignIn(email, password);
+
+      if (error) {
+        const signup = await sbSignUp(name, email, password);
+        if (signup.error) {
+          showToast('⚠️ ' + (signup.error.message || 'Erro ao criar conta'));
+          btn.disabled = false;
+          btn.innerHTML = 'Começar minha jornada →';
+          return;
+        }
+        data = signup.data;
+      }
+
+      if (data?.user) {
+        currentUser = { name, email, id: data.user.id };
+        await sbUpsertProfile(name);
+        done = await sbLoadProgress();
+      }
+    }
+  } catch(e) {
+    console.warn('Supabase err:', e);
+  }
+
+  // Mescla com localStorage
+  const local = lsLoad(email);
+  if (local?.done) done = [...new Set([...done, ...local.done])];
+
+  completedDays = new Set(done);
+  lsSave();
+
+  btn.disabled = false;
+  btn.innerHTML = 'Começar minha jornada →';
+
+  renderDashboard();
+  showScreen('screen-dashboard');
+}
+
+async function handleLogout() {
+  if (!confirm('Sair? Seu progresso está salvo.')) return;
+  if (sb) await sb.auth.signOut().catch(() => {});
+  currentUser   = null;
+  completedDays = new Set();
+  showScreen('screen-login');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════════
+function renderDashboard() {
+  const firstName = currentUser.name.split(' ')[0];
+  document.getElementById('wb-name').textContent   = firstName + '! 🌿';
+  document.getElementById('hdr-user').textContent  = firstName + ' · Sair';
+
+  const done = completedDays.size;
+  const pct  = Math.round((done / 7) * 100);
+  document.getElementById('pb-fill').style.width   = pct + '%';
+  document.getElementById('pb-label').textContent  = done + ' de 7 dias concluídos (' + pct + '%)';
+
+  document.getElementById('all-done-wrap').style.display = done === 7 ? 'block' : 'none';
+
+  const list = document.getElementById('days-list');
+  list.innerHTML = '';
+
+  DAYS.forEach(day => {
+    const isCompleted = completedDays.has(day.n);
+    const isUnlocked  = day.n === 1 || completedDays.has(day.n - 1) || isCompleted;
+    const isCurrent   = isUnlocked && !isCompleted;
+
+    const card = document.createElement('div');
+    card.className = 'day-card' +
+      (isCompleted ? ' done' : '') +
+      (!isUnlocked ? ' locked' : '') +
+      (isCurrent ? ' current' : '');
+
+    const badgeCls = isCompleted ? 'done-b' : (!isUnlocked ? 'lock-b' : 'todo-b');
+    const badgeTxt = isCompleted ? '✓'       : (!isUnlocked ? '🔒'     : '→');
+    const iconCls  = isUnlocked ? 'unlocked' : 'locked-icon';
+
+    card.innerHTML = `
+      <div class="dc-icon ${iconCls}">${isUnlocked ? day.emoji : '🔒'}</div>
+      <div class="dc-info">
+        <div class="dc-num">Dia ${day.n}</div>
+        <div class="dc-title">${day.title}</div>
+        <div class="dc-sub">${day.sub}</div>
+      </div>
+      <div class="dc-badge ${badgeCls}">${badgeTxt}</div>
+    `;
+
+    if (isUnlocked) card.onclick = () => openDay(day.n);
+    list.appendChild(card);
+  });
+}
+
+function goBack() {
+  renderDashboard();
+  showScreen('screen-dashboard');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DIA DETALHE
+// ═══════════════════════════════════════════════════════════════
+function openDay(n) {
+  viewingDay = n;
+  const d    = DAYS[n - 1];
+
+  document.getElementById('day-hdr').textContent  = 'Dia ' + n;
+  document.getElementById('dh-emoji').textContent = d.emoji;
+  document.getElementById('dh-badge').textContent = 'DIA ' + n + ' DE 7';
+  document.getElementById('dh-title').textContent = d.title;
+  document.getElementById('dh-sub').textContent   = d.sub;
+
+  // Ingredientes
+  const ingEl = document.getElementById('ing-list');
+  ingEl.innerHTML = '';
+  d.ingredients.forEach(item => {
+    const li = document.createElement('li');
+    if (item.startsWith('──')) {
+      li.innerHTML = `<span class="ing-section-head">${item.replace(/──/g, '').trim()}</span>`;
+      li.style.cssText = 'display:block;padding:0;border:none';
+    } else {
+      li.innerHTML = `<span class="ing-dot"></span><span>${item}</span>`;
+    }
+    ingEl.appendChild(li);
+  });
+
+  // Preparo
+  const prepEl = document.getElementById('prep-list');
+  prepEl.innerHTML = d.prep.map((s, i) =>
+    `<li><span class="step-n">${i + 1}</span><span>${s}</span></li>`
+  ).join('');
+
+  // Dica
+  document.getElementById('tip-box').textContent = d.tip;
+
+  // Botão
+  const done = completedDays.has(n);
+  const btn  = document.getElementById('btn-complete');
+  btn.className = 'btn-complete ' + (done ? 'done-btn' : 'todo');
+  btn.innerHTML = done ? '✓ Dia concluído!' : '✓ Completei o dia de hoje!';
+  btn.disabled  = done;
+
+  showScreen('screen-day');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MARCAR COMPLETO
+// ═══════════════════════════════════════════════════════════════
+async function markComplete() {
+  const n   = viewingDay;
+  if (completedDays.has(n)) return;
+
+  const btn = document.getElementById('btn-complete');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loader"></span>&nbsp;Salvando…';
+
+  completedDays.add(n);
+
+  try {
+    if (sb) await sbSaveProgress(n);
+  } catch(e) { console.warn('Supabase save err:', e); }
+
+  lsSave();
+
+  btn.className = 'btn-complete done-btn';
+  btn.innerHTML = '✓ Dia concluído!';
+  btn.disabled  = true;
+
+  const msg = n === 7
+    ? '🎉 Parabéns! Você completou os 7 dias da Fase de Ataque!'
+    : '🌿 Dia ' + n + ' concluído! Dia ' + (n + 1) + ' desbloqueado!';
+  showToast(msg);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INICIALIZAÇÃO
+// ═══════════════════════════════════════════════════════════════
+window.addEventListener('load', async () => {
+  initSupabase();
+
+  // 1. Tenta sessão ativa do Supabase Auth
+  if (sb) {
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session?.user) {
+        const u     = session.user;
+        const email = u.email;
+        const local = lsLoad(email);
+        const name  = u.user_metadata?.name || local?.name || email.split('@')[0];
+        currentUser = { name, email, id: u.id };
+        const sbDone = await sbLoadProgress();
+        const allDone = [...new Set([...sbDone, ...(local?.done || [])])];
+        completedDays = new Set(allDone);
+        lsSave();
+        renderDashboard();
+        showScreen('screen-dashboard');
+        return;
+      }
+    } catch(e) { console.warn('Session check err:', e); }
+  }
+
+  // 2. Fallback: localStorage
+  const keys = Object.keys(localStorage).filter(k => k.startsWith('detox7__'));
+  if (keys.length) {
+    const data = lsLoad(keys[keys.length - 1].replace('detox7__', ''));
+    if (data?.email && data?.name) {
+      currentUser   = { name: data.name, email: data.email, id: data.id || null };
+      completedDays = new Set(data.done || []);
+      renderDashboard();
+      showScreen('screen-dashboard');
+      return;
+    }
+  }
+
+  showScreen('screen-login');
+});
+
+// Enter no formulário de login
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('screen-login').classList.contains('active')) {
+    handleLogin();
+  }
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
+</body>
+</html>
