@@ -56,10 +56,12 @@
     .hdr-left { display: flex; align-items: center; gap: 10px; }
     .hdr-brand { font-size: 18px; font-weight: 800; color: var(--g700); }
     .hdr-back {
-      background: var(--g50); border: none; border-radius: 10px;
-      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 20px; color: var(--g700);
+      background: var(--g100); border: 1.5px solid var(--g200); border-radius: 12px;
+      padding: 6px 14px; height: 36px; display: flex; align-items: center; gap: 5px;
+      cursor: pointer; font-size: 15px; font-weight: 700; color: var(--g700);
+      white-space: nowrap;
     }
+    .hdr-back:hover { background: var(--g200); }
     .hdr-right { font-size: 13px; color: var(--gray400); cursor: pointer; }
     .hdr-right:hover { color: var(--g500); }
 
@@ -158,6 +160,7 @@
     .dh-badge { display: inline-block; background: rgba(255,255,255,.2); border-radius: 100px; padding: 4px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
     .dh-title { font-size: 22px; font-weight: 800; }
     .dh-sub { font-size: 13px; opacity: .75; margin-top: 5px; }
+    .dh-when { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35); border-radius: 100px; padding: 5px 16px; font-size: 12px; font-weight: 600; margin-top: 12px; }
     .day-body { padding: 0 16px; max-width: 520px; margin: -24px auto 0; }
     .info-card { background: white; border-radius: var(--radius); padding: 18px; margin-bottom: 13px; box-shadow: var(--shadow); }
     .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
@@ -302,13 +305,14 @@
 <!-- ══════════ DAY DETAIL ══════════ -->
 <div id="screen-day" class="screen">
   <div class="app-header">
-    <div class="hdr-left"><button class="hdr-back" onclick="goBack()">←</button><span class="hdr-brand" id="day-hdr">Dia 1</span></div>
+    <div class="hdr-left"><button class="hdr-back" onclick="goBack()">← Voltar</button><span class="hdr-brand" id="day-hdr">Dia 1</span></div>
   </div>
   <div class="day-hero">
     <span class="dh-emoji" id="dh-emoji">🥤</span>
     <span class="dh-badge" id="dh-badge">DIA 1 DE 7</span>
     <h2 class="dh-title" id="dh-title">Receita</h2>
     <p class="dh-sub" id="dh-sub">Subtítulo</p>
+    <div class="dh-when" id="dh-when"></div>
   </div>
   <div class="day-body">
     <img id="day-photo" class="day-photo" src="" alt="" />
@@ -417,31 +421,31 @@ function initSupabase() {
 }
 
 const DAYS = [
-  { n:1, img:'dia1_suco_verde.png', emoji:'🥤', title:'Suco Verde Detox', sub:'Ativação do sistema digestivo em jejum',
+  { n:1, img:'dia1_suco_verde.png', emoji:'🥤', title:'Suco Verde Detox', sub:'Ativação do sistema digestivo em jejum', when:'☀️ Café da manhã — beber em jejum',
     ingredients:['1 fatia de abacaxi','70 g de mamão papaia (ou kiwi)','1 a 2 folhas de couve','300 ml de água (ou 200 ml de água de coco + 100 ml de água)','Opcional: gengibre, hortelã, pepino, agrião'],
     prep:['Lave bem todos os ingredientes.','Corte o abacaxi e pique o mamão.','Coloque tudo no liquidificador com a água.','Bata 1–2 minutos até ficar homogêneo.','NÃO peneirar — as fibras são essenciais.','Beba em jejum. Aguarde 20 min antes do café.'],
     tip:'O suco verde em jejum ativa as enzimas digestivas e fornece clorofila da couve, que quelata metais pesados. O abacaxi contém bromelina, uma enzima anti-inflamatória com mais de 1.600 estudos. Beba devagar, em pequenos goles.' },
-  { n:2, img:'dia2_caldo_ossos.png', emoji:'🍲', title:'Caldo de Ossos Curativo', sub:'Reparação e selagem da mucosa intestinal',
+  { n:2, img:'dia2_caldo_ossos.png', emoji:'🍲', title:'Caldo de Ossos Curativo', sub:'Reparação e selagem da mucosa intestinal', when:'🍽️ Almoço ou jantar — preparar com antecedência',
     ingredients:['1 kg de pé de frango limpo','2 talos de aipo (salsão)','2 cenouras médias','1 cebola média','4 dentes de alho','3 raminhos de tomilho fresco','Salsinha e cebolinha a gosto','2 folhas de louro','1 col. chá de orégano','1 col. chá de sal marinho','2 col. sopa de vinagre de maçã','2 litros de água filtrada'],
     prep:['Coloque o frango, a água e o vinagre na panela de pressão com fogo DESLIGADO.','Deixe de molho 30 min — o vinagre extrai minerais dos ossos.','Acrescente todos os outros ingredientes.','Leve ao fogo. Após pegar pressão, reduza ao mínimo.','Cozinhe por 2 horas. Adicione água se necessário.','Remova os ossos, coe e sirva. Guarde em potes de vidro.'],
     tip:'O caldo de ossos é rico em colágeno, glicina e glutamina — que selam a permeabilidade intestinal e nutrem os enterócitos. O vinagre de maçã aumenta em até 213% a extração de cálcio e magnésio dos ossos.' },
-  { n:3, img:'dia3_panqueca_banana.png', emoji:'🥞', title:'Panqueca de Banana', sub:'Proteína saudável com carboidrato gentil',
+  { n:3, img:'dia3_panqueca_banana.png', emoji:'🥞', title:'Panqueca de Banana', sub:'Proteína saudável com carboidrato gentil', when:'☀️ Café da manhã',
     ingredients:['2 ovos inteiros','1 banana pequena bem madura','2 col. sopa de farelo de aveia','Canela em pó a gosto','Gotas de stevia (opcional)','Azeite ou manteiga ghee para untar'],
     prep:['Amasse a banana com garfo até virar purê liso.','Adicione os ovos e misture bem.','Junte aveia, canela e stevia. Incorpore.','Aqueça frigideira em fogo médio-baixo com azeite.','Despeje formando discos de ±8 cm. Tampe.','Após 2–3 min, vire e doure por mais 1–2 min.'],
     tip:'A banana madura tem menor índice glicêmico quando consumida com gordura e proteína. O farelo de aveia tem beta-glucana, fibra solúvel que alimenta bactérias benéficas e reduz colesterol.' },
-  { n:4, img:'dia4_suco_pepino.png', emoji:'🥗', title:'Suco Pepino-Hortelã + Ovos', sub:'Drenagem linfática e energia sustentada',
+  { n:4, img:'dia4_suco_pepino.png', emoji:'🥗', title:'Suco Pepino-Hortelã + Ovos', sub:'Drenagem linfática e energia sustentada', when:'☀️ Café da manhã — suco primeiro, ovos em seguida',
     ingredients:['── SUCO ──','1 folha de couve','1 rodela de abacaxi','1 pedaço pequeno de gengibre','5 rodelas de pepino com casca','5 folhas de hortelã','200 ml de água','── OVOS ──','2 ovos','Sal, pimenta e cúrcuma a gosto','1 fio de azeite'],
     prep:['SUCO: bata todos os ingredientes no liquidificador. Beba sem peneirar.','OVOS: bata os ovos com sal, pimenta e cúrcuma.','Aqueça frigideira em fogo BAIXO com azeite.','Despeje e mexa delicadamente com espátula.','Retire do fogo levemente úmidos.','Sirva o suco e os ovos juntos.'],
     tip:'O pepino tem ação diurética e é 96% água. A hortelã relaxa a musculatura intestinal, aliviando gases. A cúrcuma + pimenta-do-reino aumenta a absorção da curcumina em até 2.000%.' },
-  { n:5, img:'../dia5_mingau_claras.png', emoji:'🥣', title:'Mingau de Claras com Frutas', sub:'Reconforto quente, digestão suave',
+  { n:5, img:'dia5_mingau_claras.png', emoji:'🥣', title:'Mingau de Claras com Frutas', sub:'Reconforto quente, digestão suave', when:'☀️ Café da manhã — servir quente',
     ingredients:['2 col. sopa de farelo de aveia (±30 g)','200 ml de água ou leite vegetal','3 claras de ovos','1 fruta cozida: ½ maçã, pêra, banana, 10 morangos ou 1 rodela de abacaxi','Canela em pó a gosto','Cardamomo e erva-doce — 1 pitada cada'],
     prep:['Cozinhe a fruta picada com especiarias em pouca água até amolecer.','Misture aveia e água numa panela. Fogo médio, mexendo sempre.','Quando engrossar e ferver, acrescente as 3 claras.','Mexa rapidamente por 1 min — as claras cremificam o mingau.','Retire, tampe e descanse 3 min.','Monte: mingau na base, fruta cozida por cima e mais canela.'],
     tip:'Claras têm score PDCAAS 1,0 — a maior pontuação de qualidade proteica possível. A fruta COZIDA tem fibras pré-digeridas pelo calor, reduzindo fermentação e gases no intestino.' },
-  { n:6, img:'../dia6_kichari.png', emoji:'🍛', title:'Kichari Ayurvédico', sub:'Receita milenar de detox e equilíbrio',
+  { n:6, img:'dia6_kichari.png', emoji:'🍛', title:'Kichari Ayurvédico', sub:'Receita milenar de detox e equilíbrio', when:'🌙 Almoço ou jantar — deixar lentilha de molho na véspera',
     ingredients:['40 g de lentilha rosa (molho na véspera)','50 g de arroz basmati','100 g de chuchu picado','100 g de abobrinha picada','1 col. chá de manteiga ghee ou azeite','½ col. chá de sementes de erva-doce','½ col. chá de sementes de cominho','½ col. chá de gengibre fresco ralado','½ col. chá de açafrão/cúrcuma em pó','½ col. chá de coentro em pó','Sal marinho a gosto'],
     prep:['VÉSPERA: lentilha de molho em água fria por 8h. Escorra antes de usar.','Aqueça ghee. Adicione sementes de erva-doce e cominho. Doure 1 min.','Adicione arroz, lentilha e demais temperos. Refogue 2 min.','Cubra com água (cobrir + 3 cm). Leve à fervura.','Quando ferver, adicione chuchu e abobrinha. Reduza o fogo.','Cozinhe mexendo às vezes até ficar cremoso (15–20 min).'],
     tip:'Na medicina ayurvédica, o Kichari é "o alimento perfeito": arroz + lentilha formam proteína completa de fácil digestão. A curcumina inibe o fator NF-kB, principal regulador da inflamação crônica — com mais de 6.000 estudos publicados.' },
-  { n:7, img:'../dia7_tapioca_frango.png', emoji:'🎉', title:'Tapioca de Frango Detox', sub:'Parabéns! Você chegou ao Dia 7!',
+  { n:7, img:'dia7_tapioca_frango.png', emoji:'🎉', title:'Tapioca de Frango Detox', sub:'Parabéns! Você chegou ao Dia 7!', when:'☀️ Café da manhã ou almoço — celebre com calma',
     ingredients:['2 col. sopa de goma de tapioca (±40 g)','1 col. rasa de sementes de chia','80 g de frango desfiado cozido','1 tomate pequeno picado','Salsinha, cebolinha, cúrcuma, orégano, sal a gosto','Opcional: pepino e folhas verdes para acompanhar'],
     prep:['Cozinhe o frango com temperos, desfie e misture com tomate e ervas.','Misture goma de tapioca com chia em um prato.','Forre frigideira antiaderente (sem untar) com essa mistura.','Fogo baixo, sem mexer, até firmar e soltar (2–3 min).','Vire — a chia cria textura crocante por fora.','Recheie com o frango e feche ao meio. Comemore! 🎉'],
     tip:'🌟 PARABÉNS pelos 7 dias! A chia forma um gel mucilaginoso protetor para a mucosa intestinal e é rica em ômega-3 ALA anti-inflamatório. A tapioca é um dos carboidratos mais gentis para a digestão — você merece essa celebração!' },
@@ -640,6 +644,8 @@ function openDay(n) {
   document.getElementById('dh-badge').textContent = 'DIA '+n+' DE 7';
   document.getElementById('dh-title').textContent = d.title;
   document.getElementById('dh-sub').textContent   = d.sub;
+  const whenEl = document.getElementById('dh-when');
+  if (whenEl) { whenEl.textContent = d.when || ''; whenEl.style.display = d.when ? '' : 'none'; }
   const photoEl = document.getElementById('day-photo');
   if (photoEl) { photoEl.src = d.img; photoEl.alt = d.title; }
 
