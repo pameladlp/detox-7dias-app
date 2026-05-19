@@ -3,924 +3,741 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detox 7 Dias — Fase de Ataque</title>
+  <title>Detox 7 Dias</title>
   <style>
     :root {
-      --g900: #1B4332;
-      --g700: #2D6A4F;
-      --g500: #40916C;
-      --g400: #52B788;
-      --g300: #74C69D;
-      --g200: #B7E4C7;
-      --g100: #D8F3DC;
-      --g50:  #F0FBF4;
+      --g900: #1B4332; --g700: #2D6A4F; --g500: #40916C;
+      --g400: #52B788; --g300: #74C69D; --g200: #B7E4C7;
+      --g100: #D8F3DC; --g50: #F0FBF4;
       --white: #FFFFFF;
-      --gray100: #F3F4F6;
-      --gray300: #D1D5DB;
-      --gray400: #9CA3AF;
-      --gray500: #6B7280;
-      --gray700: #374151;
-      --gray900: #111827;
+      --gray100: #F3F4F6; --gray300: #D1D5DB; --gray400: #9CA3AF;
+      --gray500: #6B7280; --gray700: #374151; --gray900: #111827;
       --radius: 16px;
       --shadow: 0 2px 16px rgba(45,106,79,0.10);
       --shadow-lg: 0 6px 32px rgba(45,106,79,0.16);
+      --nav-h: 68px;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: var(--g50);
-      color: var(--gray900);
-      min-height: 100vh;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* ── SCREENS ─────────────────────────────────── */
-    .screen { display: none; animation: fadeIn 0.25s ease; }
-    .screen.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-    /* ── LOGIN ───────────────────────────────────── */
-    #screen-login {
-      display: none;
-      min-height: 100vh;
-      background: linear-gradient(160deg, var(--g700) 0%, var(--g400) 100%);
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    #screen-login.active { display: flex; }
-
-    .login-card {
-      background: white;
-      border-radius: 24px;
-      padding: 40px 32px 36px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-      text-align: center;
-    }
-
-    .login-logo { font-size: 52px; margin-bottom: 6px; display: block; }
-    .login-title { font-size: 26px; font-weight: 800; color: var(--g700); margin-bottom: 4px; }
-    .login-sub { font-size: 13px; color: var(--gray400); margin-bottom: 32px; }
-
-    .form-group { margin-bottom: 14px; text-align: left; }
-    .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--gray500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; }
-    .form-group input {
-      width: 100%; padding: 13px 16px;
-      border: 2px solid var(--g100); border-radius: 12px;
-      font-size: 15px; outline: none;
       background: var(--g50); color: var(--gray900);
-      transition: border-color 0.2s, background 0.2s;
+      min-height: 100vh; -webkit-tap-highlight-color: transparent;
     }
-    .form-group input:focus { border-color: var(--g400); background: white; }
 
-    .btn-primary {
-      width: 100%; padding: 15px;
-      background: linear-gradient(135deg, var(--g700), var(--g400));
-      color: white; border: none; border-radius: 12px;
-      font-size: 16px; font-weight: 700; cursor: pointer;
-      margin-top: 8px; transition: opacity 0.2s, transform 0.1s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
+    /* ── SCREENS ── */
+    .screen { display: none; animation: fadeIn .22s ease; }
+    .screen.active { display: block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+
+    /* ── BOTTOM NAV ── */
+    #bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 300;
+      background: white; border-top: 1px solid var(--g100);
+      display: none; height: var(--nav-h);
+      align-items: center; justify-content: space-around;
     }
-    .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
-    .btn-primary:active { transform: none; }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    #bottom-nav.visible { display: flex; }
+    .nav-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 3px; background: none; border: none; cursor: pointer;
+      padding: 8px 0; color: var(--gray400); transition: color .15s;
+    }
+    .nav-btn.active { color: var(--g500); }
+    .nav-btn span:first-child { font-size: 22px; }
+    .nav-btn span:last-child { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
 
-    .login-note { font-size: 12px; color: var(--gray400); margin-top: 16px; line-height: 1.5; }
-
-    /* ── HEADER ──────────────────────────────────── */
+    /* ── HEADER ── */
     .app-header {
       background: white; border-bottom: 1px solid var(--g100);
       padding: 0 20px; height: 60px;
       display: flex; align-items: center; justify-content: space-between;
       position: sticky; top: 0; z-index: 100;
     }
-    .header-left { display: flex; align-items: center; gap: 10px; }
-    .header-brand { font-size: 18px; font-weight: 800; color: var(--g700); }
-    .header-back {
+    .hdr-left { display: flex; align-items: center; gap: 10px; }
+    .hdr-brand { font-size: 18px; font-weight: 800; color: var(--g700); }
+    .hdr-back {
       background: var(--g50); border: none; border-radius: 10px;
       width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 20px; color: var(--g700); transition: background 0.15s;
+      cursor: pointer; font-size: 20px; color: var(--g700);
     }
-    .header-back:hover { background: var(--g100); }
-    .header-right { font-size: 13px; color: var(--gray400); cursor: pointer; }
-    .header-right:hover { color: var(--g500); }
+    .hdr-right { font-size: 13px; color: var(--gray400); cursor: pointer; }
+    .hdr-right:hover { color: var(--g500); }
 
-    /* ── DASHBOARD ───────────────────────────────── */
-    .dashboard-body { padding: 20px; max-width: 520px; margin: 0 auto; }
-
-    .welcome-banner {
-      background: linear-gradient(135deg, var(--g900), var(--g500));
-      border-radius: 22px; padding: 24px 22px 22px; color: white;
-      margin-bottom: 24px;
+    /* ── BUTTONS ── */
+    .btn-primary {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, var(--g700), var(--g400));
+      color: white; border: none; border-radius: 14px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: opacity .2s, transform .1s;
     }
-    .wb-greeting { font-size: 13px; opacity: 0.75; margin-bottom: 2px; }
-    .wb-name { font-size: 22px; font-weight: 800; margin-bottom: 18px; }
-    .pb-wrap { background: rgba(255,255,255,0.25); border-radius: 20px; height: 8px; overflow: hidden; }
-    .pb-fill { height: 100%; background: white; border-radius: 20px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
-    .pb-label { font-size: 12px; opacity: 0.8; margin-top: 7px; }
-
-    .section-label {
-      font-size: 11px; font-weight: 700; color: var(--gray400);
-      text-transform: uppercase; letter-spacing: 0.8px;
-      margin-bottom: 12px;
+    .btn-primary:hover { opacity: .92; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .btn-ghost {
+      width: 100%; padding: 13px;
+      background: rgba(255,255,255,0.18); color: white; border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 14px; font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: background .2s;
     }
+    .btn-ghost:hover { background: rgba(255,255,255,0.28); }
 
+    /* ══════════ WELCOME ══════════ */
+    #screen-welcome {
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--g900) 0%, var(--g500) 60%, var(--g300) 100%);
+      display: none; flex-direction: column; align-items: center;
+      justify-content: space-between; padding: 60px 28px 40px; text-align: center; color: white;
+    }
+    #screen-welcome.active { display: flex; }
+    .wlc-top { width: 100%; }
+    .wlc-badge { display: inline-block; background: rgba(255,255,255,0.18); border-radius: 100px; padding: 5px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; }
+    .wlc-emoji { font-size: 72px; display: block; margin-bottom: 16px; }
+    .wlc-title { font-size: 36px; font-weight: 900; line-height: 1.1; margin-bottom: 8px; }
+    .wlc-sub { font-size: 16px; opacity: .8; margin-bottom: 36px; }
+    .wlc-cards { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 36px; }
+    .wlc-card { background: rgba(255,255,255,0.12); border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; text-align: left; }
+    .wlc-card-ico { font-size: 26px; flex-shrink: 0; }
+    .wlc-card-text strong { display: block; font-size: 14px; font-weight: 700; }
+    .wlc-card-text span { font-size: 12px; opacity: .75; }
+    .wlc-cta { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+
+    /* ══════════ LOGIN ══════════ */
+    #screen-login {
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--g700) 0%, var(--g400) 100%);
+      display: none; align-items: center; justify-content: center; padding: 24px;
+    }
+    #screen-login.active { display: flex; }
+    .login-card { background: white; border-radius: 24px; padding: 36px 28px 32px; width: 100%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,.18); text-align: center; }
+    .login-logo { font-size: 44px; display: block; margin-bottom: 6px; }
+    .login-title { font-size: 22px; font-weight: 800; color: var(--g700); margin-bottom: 4px; }
+    .login-sub { font-size: 13px; color: var(--gray400); margin-bottom: 26px; }
+    .form-group { margin-bottom: 13px; text-align: left; }
+    .form-group label { display: block; font-size: 11px; font-weight: 700; color: var(--gray500); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+    .form-group input { width: 100%; padding: 12px 15px; border: 2px solid var(--g100); border-radius: 11px; font-size: 15px; outline: none; background: var(--g50); transition: border-color .2s; }
+    .form-group input:focus { border-color: var(--g400); background: white; }
+    .login-note { font-size: 11px; color: var(--gray400); margin-top: 14px; line-height: 1.6; }
+    .login-back { font-size: 13px; color: var(--g500); cursor: pointer; margin-top: 12px; display: inline-block; }
+
+    /* ══════════ DASHBOARD ══════════ */
+    .page-body { padding: 20px; max-width: 520px; margin: 0 auto; padding-bottom: calc(var(--nav-h) + 16px); }
+    .welcome-banner { background: linear-gradient(135deg, var(--g900), var(--g500)); border-radius: 22px; padding: 22px 20px 20px; color: white; margin-bottom: 22px; }
+    .wb-greeting { font-size: 13px; opacity: .75; margin-bottom: 2px; }
+    .wb-name { font-size: 22px; font-weight: 800; margin-bottom: 16px; }
+    .pb-wrap { background: rgba(255,255,255,.25); border-radius: 20px; height: 8px; overflow: hidden; }
+    .pb-fill { height: 100%; background: white; border-radius: 20px; transition: width .7s cubic-bezier(.4,0,.2,1); }
+    .pb-label { font-size: 12px; opacity: .8; margin-top: 6px; }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--gray400); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 12px; }
     .days-list { display: flex; flex-direction: column; gap: 10px; }
-
-    .day-card {
-      background: white; border-radius: var(--radius); padding: 16px 18px;
-      display: flex; align-items: center; gap: 14px;
-      box-shadow: var(--shadow); cursor: pointer;
-      border: 2px solid transparent;
-      transition: transform 0.15s, box-shadow 0.15s, border-color 0.2s;
-    }
+    .day-card { background: white; border-radius: var(--radius); padding: 15px 17px; display: flex; align-items: center; gap: 13px; box-shadow: var(--shadow); cursor: pointer; border: 2px solid transparent; transition: transform .15s, box-shadow .15s, border-color .2s; }
     .day-card:hover:not(.locked) { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
     .day-card.current { border-color: var(--g400); }
     .day-card.done { border-color: var(--g300); background: var(--g50); }
-    .day-card.locked { opacity: 0.55; cursor: not-allowed; }
-
-    .dc-icon {
-      width: 50px; height: 50px; border-radius: 14px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 24px;
-    }
+    .day-card.locked { opacity: .55; cursor: not-allowed; }
+    .dc-icon { width: 48px; height: 48px; border-radius: 13px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 23px; }
     .dc-icon.unlocked { background: var(--g100); }
     .dc-icon.locked-icon { background: var(--gray100); }
-
     .dc-info { flex: 1; min-width: 0; }
-    .dc-num { font-size: 11px; font-weight: 700; color: var(--gray400); text-transform: uppercase; letter-spacing: 0.4px; }
-    .dc-title { font-size: 15px; font-weight: 700; color: var(--gray900); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .dc-sub { font-size: 12px; color: var(--gray400); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .dc-badge {
-      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 14px;
-    }
+    .dc-num { font-size: 10px; font-weight: 700; color: var(--gray400); text-transform: uppercase; }
+    .dc-title { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dc-sub { font-size: 12px; color: var(--gray400); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dc-badge { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; }
     .dc-badge.done-b { background: var(--g400); color: white; }
     .dc-badge.todo-b { background: var(--g100); color: var(--g500); }
     .dc-badge.lock-b { background: var(--gray100); color: var(--gray400); }
+    .all-done-banner { background: linear-gradient(135deg,#ffecd2,#fcb69f); border-radius: 18px; padding: 20px; text-align: center; margin-bottom: 16px; }
+    .all-done-banner .ade { font-size: 36px; display: block; margin-bottom: 6px; }
+    .all-done-banner p { font-size: 14px; font-weight: 600; color: #7c3626; }
 
-    /* ── DAY DETAIL ──────────────────────────────── */
-    #screen-day { padding-bottom: 88px; }
-
-    .day-hero {
-      background: linear-gradient(160deg, var(--g900) 0%, var(--g500) 100%);
-      padding: 28px 24px 52px; color: white; text-align: center;
-    }
-    .dh-emoji { font-size: 60px; margin-bottom: 8px; display: block; }
-    .dh-badge {
-      display: inline-block; background: rgba(255,255,255,0.2);
-      border-radius: 100px; padding: 4px 14px; font-size: 11px;
-      font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
-    }
-    .dh-title { font-size: 22px; font-weight: 800; line-height: 1.3; }
-    .dh-sub { font-size: 13px; opacity: 0.75; margin-top: 6px; }
-
-    .day-body { padding: 0 16px; max-width: 520px; margin: -28px auto 0; }
-
-    .info-card {
-      background: white; border-radius: var(--radius); padding: 20px;
-      margin-bottom: 14px; box-shadow: var(--shadow);
-    }
-
-    .card-header {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
-    }
-    .card-ico {
-      width: 34px; height: 34px; border-radius: 10px; background: var(--g100);
-      display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0;
-    }
+    /* ══════════ DAY DETAIL ══════════ */
+    #screen-day { padding-bottom: 80px; }
+    .day-hero { background: linear-gradient(160deg, var(--g900), var(--g500)); padding: 28px 24px 50px; color: white; text-align: center; }
+    .dh-emoji { font-size: 58px; display: block; margin-bottom: 8px; }
+    .dh-badge { display: inline-block; background: rgba(255,255,255,.2); border-radius: 100px; padding: 4px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .dh-title { font-size: 22px; font-weight: 800; }
+    .dh-sub { font-size: 13px; opacity: .75; margin-top: 5px; }
+    .day-body { padding: 0 16px; max-width: 520px; margin: -24px auto 0; }
+    .info-card { background: white; border-radius: var(--radius); padding: 18px; margin-bottom: 13px; box-shadow: var(--shadow); }
+    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .card-ico { width: 32px; height: 32px; border-radius: 9px; background: var(--g100); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
     .card-title { font-size: 14px; font-weight: 700; color: var(--g700); }
-
     .ing-list { list-style: none; }
-    .ing-list li {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 8px 0; border-bottom: 1px solid var(--g50);
-      font-size: 14px; color: var(--gray700); line-height: 1.4;
-    }
+    .ing-list li { display: flex; align-items: flex-start; gap: 9px; padding: 7px 0; border-bottom: 1px solid var(--g50); font-size: 14px; color: var(--gray700); line-height: 1.4; }
     .ing-list li:last-child { border-bottom: none; }
     .ing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--g400); margin-top: 7px; flex-shrink: 0; }
-    .ing-section-head { font-weight: 700; color: var(--g700); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 0 4px; }
-
+    .ing-section-head { font-weight: 700; color: var(--g700); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; padding: 8px 0 2px; }
     .prep-list { list-style: none; }
-    .prep-list li {
-      display: flex; gap: 12px; padding: 10px 0;
-      border-bottom: 1px solid var(--g50); font-size: 14px; color: var(--gray700); line-height: 1.5;
-    }
+    .prep-list li { display: flex; gap: 11px; padding: 9px 0; border-bottom: 1px solid var(--g50); font-size: 14px; color: var(--gray700); line-height: 1.5; }
     .prep-list li:last-child { border-bottom: none; }
-    .step-n {
-      width: 22px; height: 22px; border-radius: 50%; background: var(--g400); color: white;
-      font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; margin-top: 1px;
-    }
-
-    .tip-box {
-      background: var(--g50); border-left: 4px solid var(--g400);
-      border-radius: 0 12px 12px 0; padding: 16px;
-      font-size: 14px; color: var(--gray700); line-height: 1.65;
-    }
-
-    /* ── COMPLETE BAR ────────────────────────────── */
-    .complete-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: white; border-top: 1px solid var(--g100);
-      padding: 12px 16px; z-index: 200;
-    }
-    .btn-complete {
-      width: 100%; padding: 15px; border: none; border-radius: 14px;
-      font-size: 16px; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      transition: opacity 0.2s, transform 0.1s;
-    }
-    .btn-complete.todo {
-      background: linear-gradient(135deg, var(--g700), var(--g400)); color: white;
-    }
-    .btn-complete.todo:hover { opacity: 0.9; transform: translateY(-1px); }
+    .step-n { width: 22px; height: 22px; border-radius: 50%; background: var(--g400); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .tip-box { background: var(--g50); border-left: 4px solid var(--g400); border-radius: 0 12px 12px 0; padding: 15px; font-size: 14px; color: var(--gray700); line-height: 1.65; }
+    .complete-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--g100); padding: 12px 16px; z-index: 200; }
+    .btn-complete { width: 100%; padding: 15px; border: none; border-radius: 13px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .2s; }
+    .btn-complete.todo { background: linear-gradient(135deg, var(--g700), var(--g400)); color: white; }
+    .btn-complete.todo:hover { opacity: .9; }
     .btn-complete.done-btn { background: var(--g100); color: var(--g700); cursor: default; }
-    .btn-complete:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .btn-complete:disabled { opacity: .7; cursor: not-allowed; }
 
-    /* ── TOAST ───────────────────────────────────── */
-    .toast {
-      position: fixed; top: 16px; left: 50%;
-      transform: translateX(-50%) translateY(-80px);
-      background: var(--g900); color: white;
-      padding: 11px 22px; border-radius: 100px;
-      font-size: 14px; font-weight: 600; z-index: 999;
-      transition: transform 0.3s cubic-bezier(.4,0,.2,1);
-      white-space: nowrap; pointer-events: none;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
+    /* ══════════ SHOPPING ══════════ */
+    .shop-hero { background: linear-gradient(135deg, var(--g900), var(--g500)); padding: 28px 20px 20px; color: white; }
+    .shop-hero h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .shop-hero p { font-size: 13px; opacity: .8; }
+    .shop-pb-wrap { margin-top: 14px; background: rgba(255,255,255,.25); border-radius: 20px; height: 6px; overflow: hidden; }
+    .shop-pb-fill { height: 100%; background: white; border-radius: 20px; transition: width .4s; }
+    .shop-pb-label { font-size: 11px; opacity: .75; margin-top: 5px; }
+    .shop-clear-btn { background: none; border: 1px solid rgba(255,255,255,.4); color: white; border-radius: 8px; padding: 5px 12px; font-size: 12px; cursor: pointer; margin-top: 10px; }
+    .shop-category { margin-bottom: 6px; }
+    .shop-cat-header { display: flex; align-items: center; gap: 8px; padding: 12px 0 8px; font-size: 13px; font-weight: 700; color: var(--g700); border-bottom: 1px solid var(--g100); margin-bottom: 4px; }
+    .shop-item { display: flex; align-items: center; gap: 12px; padding: 11px 16px; background: white; border-radius: 12px; margin-bottom: 6px; box-shadow: var(--shadow); cursor: pointer; transition: opacity .2s; }
+    .shop-item.bought { opacity: .5; }
+    .shop-check { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; border: 2px solid var(--g300); display: flex; align-items: center; justify-content: center; font-size: 13px; transition: background .15s, border-color .15s; }
+    .shop-item.bought .shop-check { background: var(--g400); border-color: var(--g400); color: white; }
+    .shop-item-info { flex: 1; }
+    .shop-item-name { font-size: 14px; font-weight: 600; }
+    .shop-item.bought .shop-item-name { text-decoration: line-through; color: var(--gray400); }
+    .shop-item-note { font-size: 11px; color: var(--gray400); margin-top: 1px; }
+
+    /* ══════════ BONUS ══════════ */
+    .bonus-hero { background: linear-gradient(135deg, #2c3e50, #3d6b4f); padding: 28px 20px 24px; color: white; }
+    .bonus-hero h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .bonus-hero p { font-size: 13px; opacity: .8; }
+    .bonus-section { background: white; border-radius: var(--radius); padding: 20px; margin-bottom: 14px; box-shadow: var(--shadow); }
+    .bonus-sec-title { font-size: 15px; font-weight: 800; color: var(--g700); margin-bottom: 4px; }
+    .bonus-sec-sub { font-size: 12px; color: var(--gray400); margin-bottom: 14px; }
+    .bonus-checklist { list-style: none; }
+    .bonus-checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--g50); font-size: 14px; color: var(--gray700); line-height: 1.4; cursor: pointer; }
+    .bonus-checklist li:last-child { border-bottom: none; }
+    .bonus-check { width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0; margin-top: 1px; border: 2px solid var(--g300); display: flex; align-items: center; justify-content: center; font-size: 11px; transition: background .15s; }
+    .bonus-checklist li.checked .bonus-check { background: var(--g400); border-color: var(--g400); color: white; }
+    .bonus-checklist li.checked > span { text-decoration: line-through; color: var(--gray400); }
+    .tip-highlight { background: var(--g50); border-radius: 12px; padding: 14px; font-size: 14px; color: var(--gray700); line-height: 1.6; margin-top: 10px; border-left: 4px solid var(--g400); }
+    .tip-highlight strong { color: var(--g700); }
+    .tip-list { list-style: none; margin-top: 4px; }
+    .tip-list li { display: flex; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--g50); font-size: 14px; color: var(--gray700); line-height: 1.4; }
+    .tip-list li:last-child { border-bottom: none; }
+    .tip-dot { color: var(--g400); font-size: 18px; margin-top: -1px; flex-shrink: 0; }
+
+    /* ── TOAST / LOADER ── */
+    .toast { position: fixed; top: 16px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--g900); color: white; padding: 11px 22px; border-radius: 100px; font-size: 14px; font-weight: 600; z-index: 999; transition: transform .3s cubic-bezier(.4,0,.2,1); white-space: nowrap; pointer-events: none; box-shadow: 0 4px 20px rgba(0,0,0,.2); }
     .toast.show { transform: translateX(-50%) translateY(0); }
-
-    /* ── LOADER ──────────────────────────────────── */
-    .loader {
-      display: inline-block; width: 17px; height: 17px;
-      border: 2px solid rgba(255,255,255,0.35); border-top-color: white;
-      border-radius: 50%; animation: spin 0.65s linear infinite;
-    }
+    .loader { display: inline-block; width: 17px; height: 17px; border: 2px solid rgba(255,255,255,.35); border-top-color: white; border-radius: 50%; animation: spin .65s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── EMPTY STATE ─────────────────────────────── */
-    .all-done-banner {
-      background: linear-gradient(135deg, #ffecd2, #fcb69f);
-      border-radius: 18px; padding: 22px; text-align: center;
-      margin-top: 8px; margin-bottom: 16px;
-    }
-    .all-done-banner .emoji { font-size: 40px; display: block; margin-bottom: 8px; }
-    .all-done-banner p { font-size: 15px; font-weight: 600; color: #7c3626; }
   </style>
 </head>
 <body>
 
 <div class="toast" id="toast"></div>
 
-<!-- ══════════════════════════════════════════════
-     TELA: LOGIN
-════════════════════════════════════════════════ -->
+<!-- ══════════ WELCOME ══════════ -->
+<div id="screen-welcome" class="screen">
+  <div class="wlc-top">
+    <span class="wlc-badge">Fase de Ataque</span>
+    <span class="wlc-emoji">🌿</span>
+    <h1 class="wlc-title">Detox<br>7 Dias</h1>
+    <p class="wlc-sub">Limpeza intestinal e desinflamação<br>com receitas simples do dia a dia</p>
+    <div class="wlc-cards">
+      <div class="wlc-card">
+        <span class="wlc-card-ico">🔥</span>
+        <div class="wlc-card-text"><strong>Redução da inflamação</strong><span>Dieta anti-inflamatória com alimentos de fácil digestão</span></div>
+      </div>
+      <div class="wlc-card">
+        <span class="wlc-card-ico">🦠</span>
+        <div class="wlc-card-text"><strong>Equilíbrio da microbiota</strong><span>Receitas que nutrem as bactérias benéficas do intestino</span></div>
+      </div>
+      <div class="wlc-card">
+        <span class="wlc-card-ico">⚡</span>
+        <div class="wlc-card-text"><strong>Energia e sono melhores</strong><span>Regulação hormonal e sensibilidade à insulina</span></div>
+      </div>
+      <div class="wlc-card">
+        <span class="wlc-card-ico">🔒</span>
+        <div class="wlc-card-text"><strong>Desbloqueio progressivo</strong><span>Conclua cada dia para liberar o próximo</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="wlc-cta">
+    <button class="btn-primary" onclick="showScreen('screen-login')">Quero começar →</button>
+    <button class="btn-ghost" onclick="showScreen('screen-login')">Já tenho conta</button>
+  </div>
+</div>
+
+<!-- ══════════ LOGIN ══════════ -->
 <div id="screen-login" class="screen">
   <div class="login-card">
     <span class="login-logo">🌿</span>
     <h1 class="login-title">Detox 7 Dias</h1>
-    <p class="login-sub">Fase de Ataque — Detox + Limpeza Intestinal</p>
-
-    <div class="form-group">
-      <label>Seu nome</label>
-      <input type="text" id="inp-name" placeholder="Como quer ser chamada?" autocomplete="name" />
-    </div>
-    <div class="form-group">
-      <label>E-mail</label>
-      <input type="email" id="inp-email" placeholder="seu@email.com" autocomplete="email" />
-    </div>
-    <div class="form-group">
-      <label>Senha</label>
-      <input type="password" id="inp-password" placeholder="Mínimo 6 caracteres" autocomplete="current-password" />
-    </div>
-    <button class="btn-primary" id="btn-login" onclick="handleLogin()">
-      Começar minha jornada →
-    </button>
-    <p class="login-note">Primeira vez? Sua conta é criada automaticamente.<br>Já tem conta? Usa o mesmo e-mail e senha para entrar.</p>
+    <p class="login-sub">Fase de Ataque — Limpeza Intestinal</p>
+    <div class="form-group"><label>Seu nome</label><input type="text" id="inp-name" placeholder="Como quer ser chamada?" autocomplete="name" /></div>
+    <div class="form-group"><label>E-mail</label><input type="email" id="inp-email" placeholder="seu@email.com" autocomplete="email" /></div>
+    <div class="form-group"><label>Senha</label><input type="password" id="inp-password" placeholder="Mínimo 6 caracteres" autocomplete="current-password" /></div>
+    <button class="btn-primary" id="btn-login" onclick="handleLogin()" style="margin-top:6px">Entrar / Criar conta →</button>
+    <p class="login-note">Primeira vez? Conta criada automaticamente.<br>Já tem conta? Use o mesmo e-mail e senha.</p>
+    <span class="login-back" onclick="showScreen('screen-welcome')">← Voltar</span>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     TELA: DASHBOARD
-════════════════════════════════════════════════ -->
+<!-- ══════════ DASHBOARD ══════════ -->
 <div id="screen-dashboard" class="screen">
   <div class="app-header">
-    <div class="header-left">
-      <span style="font-size:22px">🌿</span>
-      <span class="header-brand">Detox 7 Dias</span>
-    </div>
-    <span class="header-right" id="hdr-user" onclick="handleLogout()">Sair</span>
+    <div class="hdr-left"><span style="font-size:20px">🌿</span><span class="hdr-brand">Detox 7 Dias</span></div>
+    <span class="hdr-right" id="hdr-user" onclick="handleLogout()">Sair</span>
   </div>
-
-  <div class="dashboard-body">
+  <div class="page-body">
     <div class="welcome-banner">
       <p class="wb-greeting">Olá,</p>
       <p class="wb-name" id="wb-name">…</p>
       <div class="pb-wrap"><div class="pb-fill" id="pb-fill" style="width:0%"></div></div>
       <p class="pb-label" id="pb-label">0 de 7 dias concluídos</p>
     </div>
-
     <div id="all-done-wrap" style="display:none">
-      <div class="all-done-banner">
-        <span class="emoji">🎉</span>
-        <p>Você concluiu os 7 dias da Fase de Ataque!<br>Parabéns pela dedicação!</p>
-      </div>
+      <div class="all-done-banner"><span class="ade">🎉</span><p>Você concluiu os 7 dias!<br>Parabéns pela dedicação!</p></div>
     </div>
-
     <p class="section-label">Seus 7 dias</p>
     <div class="days-list" id="days-list"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     TELA: DIA DETALHADO
-════════════════════════════════════════════════ -->
+<!-- ══════════ DAY DETAIL ══════════ -->
 <div id="screen-day" class="screen">
   <div class="app-header">
-    <div class="header-left">
-      <button class="header-back" onclick="goBack()">←</button>
-      <span class="header-brand" id="day-hdr">Dia 1</span>
-    </div>
+    <div class="hdr-left"><button class="hdr-back" onclick="goBack()">←</button><span class="hdr-brand" id="day-hdr">Dia 1</span></div>
   </div>
-
   <div class="day-hero">
     <span class="dh-emoji" id="dh-emoji">🥤</span>
     <span class="dh-badge" id="dh-badge">DIA 1 DE 7</span>
     <h2 class="dh-title" id="dh-title">Receita</h2>
     <p class="dh-sub" id="dh-sub">Subtítulo</p>
   </div>
-
   <div class="day-body">
-    <!-- Ingredientes -->
-    <div class="info-card">
-      <div class="card-header">
-        <div class="card-ico">🛒</div>
-        <span class="card-title">Ingredientes</span>
-      </div>
-      <ul class="ing-list" id="ing-list"></ul>
-    </div>
-
-    <!-- Preparo -->
-    <div class="info-card">
-      <div class="card-header">
-        <div class="card-ico">👩‍🍳</div>
-        <span class="card-title">Modo de Preparo</span>
-      </div>
-      <ol class="prep-list" id="prep-list"></ol>
-    </div>
-
-    <!-- Dica -->
-    <div class="info-card">
-      <div class="card-header">
-        <div class="card-ico">💡</div>
-        <span class="card-title">Dica Nutricional</span>
-      </div>
-      <div class="tip-box" id="tip-box"></div>
-    </div>
+    <div class="info-card"><div class="card-header"><div class="card-ico">🛒</div><span class="card-title">Ingredientes</span></div><ul class="ing-list" id="ing-list"></ul></div>
+    <div class="info-card"><div class="card-header"><div class="card-ico">👩‍🍳</div><span class="card-title">Modo de Preparo</span></div><ol class="prep-list" id="prep-list"></ol></div>
+    <div class="info-card"><div class="card-header"><div class="card-ico">💡</div><span class="card-title">Dica Nutricional</span></div><div class="tip-box" id="tip-box"></div></div>
   </div>
-
   <div class="complete-bar">
-    <button class="btn-complete todo" id="btn-complete" onclick="markComplete()">
-      ✓ Completei o dia de hoje!
-    </button>
+    <button class="btn-complete todo" id="btn-complete" onclick="markComplete()">✓ Completei o dia de hoje!</button>
   </div>
 </div>
 
+<!-- ══════════ SHOPPING ══════════ -->
+<div id="screen-shopping" class="screen">
+  <div class="shop-hero">
+    <h1>🛒 Lista de Compras</h1>
+    <p>Tudo que você precisa para os 7 dias</p>
+    <div class="shop-pb-wrap"><div class="shop-pb-fill" id="shop-pb" style="width:0%"></div></div>
+    <p class="shop-pb-label" id="shop-pb-label">0 itens marcados</p>
+    <button class="shop-clear-btn" onclick="clearShopping()">Limpar lista</button>
+  </div>
+  <div class="page-body" style="padding-top:16px"><div id="shop-list"></div></div>
+</div>
+
+<!-- ══════════ BONUS ══════════ -->
+<div id="screen-bonus" class="screen">
+  <div class="bonus-hero">
+    <h1>⭐ Prep de Fim de Semana</h1>
+    <p>Como se organizar para não desistir na semana</p>
+  </div>
+  <div class="page-body" style="padding-top:16px">
+
+    <div class="bonus-section">
+      <div class="bonus-sec-title">🤔 Por que preparar no fim de semana?</div>
+      <div class="bonus-sec-sub">A maior causa de desistência não é falta de vontade — é falta de preparo</div>
+      <div class="tip-highlight">Quando você chega segunda com fome, cansada e sem os ingredientes em casa, qualquer coisa processada parece mais fácil.<br><br><strong>O preparo do fim de semana elimina esse momento de fraqueza.</strong> Você já decidiu com antecedência. Só resta executar.</div>
+    </div>
+
+    <div class="bonus-section">
+      <div class="bonus-sec-title">🛍️ Sábado — Dia de Compras</div>
+      <div class="bonus-sec-sub">Marque os itens na aba Compras antes de sair</div>
+      <ul class="bonus-checklist" id="checklist-sabado">
+        <li data-id="bs1" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Conferir a lista de compras do app e montar o carrinho</span></li>
+        <li data-id="bs2" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Priorizar orgânicos para couve, pepino e frutas que come com casca</span></li>
+        <li data-id="bs3" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Comprar potes de vidro com tampa para armazenar o caldo de ossos</span></li>
+        <li data-id="bs4" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Comprar limões extras — você vai usar todo dia em jejum</span></li>
+        <li data-id="bs5" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Conferir se tem azeite, sal marinho e especiarias em casa</span></li>
+      </ul>
+    </div>
+
+    <div class="bonus-section">
+      <div class="bonus-sec-title">🍳 Domingo — Prep das Receitas</div>
+      <div class="bonus-sec-sub">2 a 3 horas que salvam a semana inteira</div>
+      <ul class="bonus-checklist" id="checklist-domingo">
+        <li data-id="bd1" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Fazer o <strong>caldo de ossos</strong> (2h de cozimento, você fica livre enquanto cozinha)</span></li>
+        <li data-id="bd2" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Deixar a <strong>lentilha rosa</strong> de molho para o dia 6 (8h antes de usar)</span></li>
+        <li data-id="bd3" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Higienizar e secar as verduras — guardar em pote fechado com papel-toalha</span></li>
+        <li data-id="bd4" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Pré-cortar legumes para a sopa e guardar em potinhos na geladeira</span></li>
+        <li data-id="bd5" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Retirar o frango do freezer (para o dia 7) na noite de sábado</span></li>
+        <li data-id="bd6" onclick="toggleBonus(this)"><div class="bonus-check">✓</div><span>Separar os ingredientes de cada dia em potinhos identificados</span></li>
+      </ul>
+    </div>
+
+    <div class="bonus-section">
+      <div class="bonus-sec-title">🧊 Dicas de Armazenamento</div>
+      <ul class="tip-list">
+        <li><span class="tip-dot">•</span><span><strong>Caldo de ossos:</strong> geladeira 5 dias, freezer até 5 meses em potes de vidro</span></li>
+        <li><span class="tip-dot">•</span><span><strong>Verduras folhosas:</strong> embrulhe em papel-toalha dentro de pote fechado — dura o dobro</span></li>
+        <li><span class="tip-dot">•</span><span><strong>Frango cozido e desfiado:</strong> geladeira 3 dias, freezer 1 mês</span></li>
+        <li><span class="tip-dot">•</span><span><strong>Frutas cortadas:</strong> nunca corte com antecedência — oxidam e perdem nutrientes</span></li>
+        <li><span class="tip-dot">•</span><span><strong>Legumes cozidos:</strong> geladeira até 4 dias em pote fechado</span></li>
+      </ul>
+    </div>
+
+    <div class="bonus-section">
+      <div class="bonus-sec-title">🧠 Mentalidade para não desistir</div>
+      <ul class="tip-list">
+        <li><span class="tip-dot">•</span><span><strong>Não tente ser perfeita.</strong> Pulou um dia? Retome no próximo — nunca recomece do zero</span></li>
+        <li><span class="tip-dot">•</span><span><strong>Hidratação é 50% do trabalho.</strong> Sentiu fraqueza? Beba água antes de qualquer coisa</span></li>
+        <li><span class="tip-dot">•</span><span><strong>Durma antes das 23h.</strong> O fígado detoxifica de madrugada — sono é parte do protocolo</span></li>
+        <li><span class="tip-dot">•</span><span><strong>Os 2 primeiros dias são os mais difíceis.</strong> Dor de cabeça e cansaço são sinais de que está funcionando</span></li>
+        <li><span class="tip-dot">•</span><span><strong>Registre como acorda.</strong> Disposição, inchaço, humor — isso motiva mais do que a balança</span></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ BOTTOM NAV ══════════ -->
+<nav id="bottom-nav">
+  <button class="nav-btn" id="nav-inicio" onclick="navTo('dashboard')"><span>🏠</span><span>Início</span></button>
+  <button class="nav-btn" id="nav-compras" onclick="navTo('shopping')"><span>🛒</span><span>Compras</span></button>
+  <button class="nav-btn" id="nav-bonus" onclick="navTo('bonus')"><span>⭐</span><span>Bônus</span></button>
+</nav>
+
 <script>
-// ═══════════════════════════════════════════════════════════════
-// CONFIGURAÇÃO SUPABASE
-// Substitua com suas credenciais em https://supabase.com
-// ═══════════════════════════════════════════════════════════════
 const SUPABASE_URL      = 'https://ybvstcviymjmswoqwjbi.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_fMQoebpe_lMS1RfEAwhOwQ_nLfJj8SF';
-
 let sb = null;
 
 function initSupabase() {
   try {
-    if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && window.supabase) {
+    if (SUPABASE_URL !== 'YOUR_SUPABASE_URL' && window.supabase && !sb)
       sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
-  } catch(e) { console.warn('Supabase não configurado, usando localStorage.'); }
+  } catch(e) {}
 }
 
-// ═══════════════════════════════════════════════════════════════
-// DADOS DOS 7 DIAS
-// ═══════════════════════════════════════════════════════════════
 const DAYS = [
-  {
-    n: 1,
-    emoji: '🥤',
-    title: 'Suco Verde Detox',
-    sub: 'Ativação do sistema digestivo em jejum',
-    ingredients: [
-      '1 fatia de abacaxi',
-      '70 g de mamão papaia (pode substituir por kiwi)',
-      '1 a 2 folhas de couve',
-      '300 ml de água (ou 200 ml de água de coco + 100 ml de água)',
-      'Opcional: lascas de gengibre, folhas de hortelã, rodelas de pepino, agrião',
-    ],
-    prep: [
-      'Lave bem todos os ingredientes em água corrente.',
-      'Corte o abacaxi em pedaços e pique o mamão grosseiramente.',
-      'Coloque tudo no liquidificador com a água.',
-      'Bata por 1 a 2 minutos até ficar completamente homogêneo.',
-      'NÃO peneirar — as fibras são fundamentais para o processo detox.',
-      'Beba em jejum. Aguarde 20 minutos antes do café da manhã.',
-    ],
-    tip: 'O suco verde em jejum ativa as enzimas digestivas e fornece clorofila da couve, que quelata (se liga a) metais pesados facilitando sua eliminação. O abacaxi contém bromelina, uma enzima anti-inflamatória com mais de 1.600 estudos científicos publicados. Beba devagar, em pequenos goles.',
-  },
-  {
-    n: 2,
-    emoji: '🍲',
-    title: 'Caldo de Ossos Curativo',
-    sub: 'Reparação e selagem da mucosa intestinal',
-    ingredients: [
-      '1 kg de pé de frango limpo',
-      '2 talos de aipo (salsão)',
-      '2 cenouras médias',
-      '1 cebola média',
-      '4 dentes de alho',
-      '3 raminhos de tomilho fresco',
-      'Salsinha e cebolinha a gosto',
-      '2 folhas de louro',
-      '1 colher de chá de orégano',
-      '1 colher de chá de sal marinho',
-      '2 colheres de sopa de vinagre de maçã',
-      '2 litros de água filtrada',
-    ],
-    prep: [
-      'Coloque os pés de frango, a água e o vinagre na panela de pressão com fogo DESLIGADO.',
-      'Deixe de molho por 30 minutos — o vinagre extrai minerais dos ossos.',
-      'Acrescente todos os outros ingredientes e leve ao fogo alto.',
-      'Após a panela pegar pressão, reduza o fogo ao mínimo.',
-      'Cozinhe por 2 horas. Adicione água se for secando.',
-      'Desligue, aguarde sair a pressão, remova os ossos e coe tudo.',
-      'Sirva quente. Armazene em potes de vidro (geladeira: 5 dias; freezer: 5 meses).',
-    ],
-    tip: 'O caldo de ossos é rico em colágeno hidrolisado, glicina e glutamina — aminoácidos que selam a permeabilidade intestinal ("leaky gut") e nutrem os enterócitos. O vinagre de maçã aumenta em até 213% a extração de cálcio, magnésio e fósforo dos ossos durante o cozimento.',
-  },
-  {
-    n: 3,
-    emoji: '🥞',
-    title: 'Panqueca de Banana',
-    sub: 'Proteína saudável com carboidrato gentil',
-    ingredients: [
-      '2 ovos inteiros',
-      '1 banana pequena bem madura',
-      '2 colheres de sopa de farelo de aveia',
-      'Canela em pó a gosto',
-      'Gotas de adoçante stevia a gosto (opcional)',
-      '1 fio de azeite ou manteiga ghee para a frigideira',
-    ],
-    prep: [
-      'Amasse a banana com um garfo até virar purê bem liso.',
-      'Adicione os ovos e misture vigorosamente.',
-      'Junte o farelo de aveia, a canela e a stevia. Incorpore bem.',
-      'Aqueça a frigideira em fogo médio-baixo com azeite.',
-      'Despeje a massa formando discos de ± 8 cm.',
-      'Tampe e aguarde 2-3 min até firmar e soltar da frigideira.',
-      'Vire com cuidado e doure o outro lado por mais 1-2 min.',
-    ],
-    tip: 'A banana madura tem índice glicêmico menor do que se imagina quando consumida com gordura e proteína do ovo. O farelo de aveia (não o flocos) tem maior concentração de beta-glucana, a fibra solúvel mais estudada para redução de colesterol e alimentação de bactérias benéficas. Ótima opção para os dias 3 a 7.',
-  },
-  {
-    n: 4,
-    emoji: '🥗',
-    title: 'Suco Pepino-Hortelã + Ovos',
-    sub: 'Drenagem linfática e energia sustentada',
-    ingredients: [
-      '── SUCO DETOX ──',
-      '1 folha de couve',
-      '1 rodela de abacaxi',
-      '1 pedaço pequeno de gengibre (ou 1 col. chá ralado)',
-      '5 rodelas de pepino com casca',
-      '5 folhas de hortelã',
-      '200 ml de água filtrada',
-      '── OVOS MEXIDOS ──',
-      '2 ovos',
-      'Sal marinho e pimenta-do-reino a gosto',
-      '1 fio de azeite',
-      'Pitada de cúrcuma em pó (opcional)',
-    ],
-    prep: [
-      'SUCO: coloque todos os ingredientes do suco no liquidificador.',
-      'Bata bem e beba sem peneirar.',
-      'OVOS: bata os ovos em um bowl com sal, pimenta e cúrcuma.',
-      'Aqueça a frigideira em fogo BAIXO com o azeite.',
-      'Despeje os ovos e mexa delicadamente com espátula de silicone.',
-      'Retire do fogo enquanto ainda levemente úmidos.',
-      'Sirva o suco e os ovos juntos ou em sequência.',
-    ],
-    tip: 'O pepino contém cucurbitacinas, compostos com potente ação anti-inflamatória, e é 96% água — excelente diurético natural. A hortelã relaxa a musculatura lisa do intestino, aliviando cólicas e gases. A cúrcuma nos ovos ativa melhor sua curcumina quando combinada com pimenta-do-reino (piperina aumenta absorção em até 2.000%).',
-  },
-  {
-    n: 5,
-    emoji: '🥣',
-    title: 'Mingau de Claras com Frutas',
-    sub: 'Reconforto quente, digestão suave',
-    ingredients: [
-      '2 colheres de sopa de farelo de aveia (± 30 g)',
-      '200 ml de água (ou leite vegetal de coco ou amêndoas)',
-      '3 claras de ovos',
-      '1 fruta cozida: ½ maçã pequena, pêra, banana, 10 morangos ou 1 rodela de abacaxi',
-      'Canela em pó a gosto',
-      'Cardamomo em pó — 1 pitada',
-      'Erva-doce — 1 pitada',
-    ],
-    prep: [
-      'Pique a fruta em pedaços pequenos e cozinhe em pouca água com as especiarias até amolecer.',
-      'Em outra panela, combine a aveia e a água. Leve ao fogo médio mexendo sempre.',
-      'Quando engrossar e começar a ferver, acrescente as 3 claras.',
-      'Mexa rapidamente por 1 minuto — as claras cozinham e cremificam o mingau.',
-      'Retire do fogo, tampe e deixe descansar 3 minutos.',
-      'Monte o bowl: mingau na base e a fruta cozida por cima.',
-      'Finalize com mais canela e sirva bem quente.',
-    ],
-    tip: 'As claras têm score PDCAAS 1,0 — a maior pontuação possível de qualidade proteica. Como são quase puras proteínas e água, são muito fáceis de digerir, perfeitas para a fase de descanso intestinal. A fruta COZIDA tem fibras pré-digeridas pelo calor, reduzindo a fermentação no intestino e os gases associados.',
-  },
-  {
-    n: 6,
-    emoji: '🍛',
-    title: 'Kichari Ayurvédico',
-    sub: 'Receita milenar de detox e equilíbrio',
-    ingredients: [
-      '40 g de lentilha rosa (deixar de molho na noite anterior)',
-      '50 g de arroz basmati (ou arroz branco)',
-      '100 g de chuchu picado',
-      '100 g de abobrinha picada',
-      '1 col. chá de manteiga ghee (ou azeite)',
-      '½ col. chá de sementes de erva-doce',
-      '½ col. chá de sementes de cominho',
-      '½ col. chá de gengibre fresco ralado',
-      '½ col. chá de açafrão em pó (cúrcuma)',
-      '½ col. chá de coentro em pó',
-      'Sal marinho a gosto',
-      'Água filtrada (suficiente para cobrir + 3 cm)',
-    ],
-    prep: [
-      'NA VÉSPERA: deixe a lentilha de molho em água fria por 8 horas. Escorra antes de usar.',
-      'Aqueça o ghee na panela. Adicione sementes de erva-doce e cominho.',
-      'Mexa por 1 minuto até as sementes estourarem levemente e ficarem aromáticas.',
-      'Adicione o arroz e a lentilha. Refogue 2 minutos nas sementes.',
-      'Adicione os demais temperos (gengibre, açafrão, coentro, sal). Mexa.',
-      'Cubra com água (± 3 cm acima do nível dos grãos). Leve à fervura.',
-      'Quando ferver, adicione chuchu e abobrinha. Reduza ao fogo mínimo.',
-      'Cozinhe sem tampa, mexendo às vezes, até consistência cremosa (15-20 min).',
-    ],
-    tip: 'Na medicina ayurvédica, o Kichari é chamado de "o alimento perfeito": arroz e lentilha juntos formam uma proteína completa com todos os aminoácidos essenciais. A curcumina do açafrão tem mais de 6.000 estudos científicos e age como um dos mais potentes anti-inflamatórios naturais, inibindo o fator NF-kB, principal regulador da inflamação crônica.',
-  },
-  {
-    n: 7,
-    emoji: '🎉',
-    title: 'Tapioca de Frango Detox',
-    sub: 'Parabéns! Você chegou ao Dia 7!',
-    ingredients: [
-      '2 colheres de sopa de goma de tapioca (± 40 g)',
-      '1 colher rasa de sementes de chia',
-      '80 g de frango desfiado (cozido, temperado)',
-      '1 tomate pequeno picadinho',
-      'Salsinha e cebolinha a gosto',
-      'Cúrcuma, orégano, sal marinho a gosto',
-      'Opcional: rodelas de pepino e folhas verdes para acompanhar',
-    ],
-    prep: [
-      'Cozinhe o frango com temperos naturais, desfie e misture com tomate e ervas.',
-      'Num prato, misture a goma de tapioca com as sementes de chia.',
-      'Forre uma frigideira antiaderente (sem untar) com essa mistura.',
-      'Leve ao fogo baixo sem mexer até a tapioca firmar e soltar do fundo (2-3 min).',
-      'Vire com cuidado — a chia cria uma textura crocante por fora.',
-      'Retire do fogo, recheie com o frango e feche ao meio.',
-      'Sirva com o acompanhamento e celebre seus 7 dias concluídos! 🎉',
-    ],
-    tip: '🌟 PARABÉNS por completar a Fase de Ataque! Nestes 7 dias você reduziu a inflamação sistêmica, deu descanso ao seu intestino e começou a reequilibrar a microbiota. A chia é rica em ômega-3 ALA e forma um gel mucilaginoso que protege a mucosa intestinal. A tapioca (goma de mandioca) é um dos carboidratos mais gentis para a digestão — e você merece celebrar!',
-  },
+  { n:1, emoji:'🥤', title:'Suco Verde Detox', sub:'Ativação do sistema digestivo em jejum',
+    ingredients:['1 fatia de abacaxi','70 g de mamão papaia (ou kiwi)','1 a 2 folhas de couve','300 ml de água (ou 200 ml de água de coco + 100 ml de água)','Opcional: gengibre, hortelã, pepino, agrião'],
+    prep:['Lave bem todos os ingredientes.','Corte o abacaxi e pique o mamão.','Coloque tudo no liquidificador com a água.','Bata 1–2 minutos até ficar homogêneo.','NÃO peneirar — as fibras são essenciais.','Beba em jejum. Aguarde 20 min antes do café.'],
+    tip:'O suco verde em jejum ativa as enzimas digestivas e fornece clorofila da couve, que quelata metais pesados. O abacaxi contém bromelina, uma enzima anti-inflamatória com mais de 1.600 estudos. Beba devagar, em pequenos goles.' },
+  { n:2, emoji:'🍲', title:'Caldo de Ossos Curativo', sub:'Reparação e selagem da mucosa intestinal',
+    ingredients:['1 kg de pé de frango limpo','2 talos de aipo (salsão)','2 cenouras médias','1 cebola média','4 dentes de alho','3 raminhos de tomilho fresco','Salsinha e cebolinha a gosto','2 folhas de louro','1 col. chá de orégano','1 col. chá de sal marinho','2 col. sopa de vinagre de maçã','2 litros de água filtrada'],
+    prep:['Coloque o frango, a água e o vinagre na panela de pressão com fogo DESLIGADO.','Deixe de molho 30 min — o vinagre extrai minerais dos ossos.','Acrescente todos os outros ingredientes.','Leve ao fogo. Após pegar pressão, reduza ao mínimo.','Cozinhe por 2 horas. Adicione água se necessário.','Remova os ossos, coe e sirva. Guarde em potes de vidro.'],
+    tip:'O caldo de ossos é rico em colágeno, glicina e glutamina — que selam a permeabilidade intestinal e nutrem os enterócitos. O vinagre de maçã aumenta em até 213% a extração de cálcio e magnésio dos ossos.' },
+  { n:3, emoji:'🥞', title:'Panqueca de Banana', sub:'Proteína saudável com carboidrato gentil',
+    ingredients:['2 ovos inteiros','1 banana pequena bem madura','2 col. sopa de farelo de aveia','Canela em pó a gosto','Gotas de stevia (opcional)','Azeite ou manteiga ghee para untar'],
+    prep:['Amasse a banana com garfo até virar purê liso.','Adicione os ovos e misture bem.','Junte aveia, canela e stevia. Incorpore.','Aqueça frigideira em fogo médio-baixo com azeite.','Despeje formando discos de ±8 cm. Tampe.','Após 2–3 min, vire e doure por mais 1–2 min.'],
+    tip:'A banana madura tem menor índice glicêmico quando consumida com gordura e proteína. O farelo de aveia tem beta-glucana, fibra solúvel que alimenta bactérias benéficas e reduz colesterol.' },
+  { n:4, emoji:'🥗', title:'Suco Pepino-Hortelã + Ovos', sub:'Drenagem linfática e energia sustentada',
+    ingredients:['── SUCO ──','1 folha de couve','1 rodela de abacaxi','1 pedaço pequeno de gengibre','5 rodelas de pepino com casca','5 folhas de hortelã','200 ml de água','── OVOS ──','2 ovos','Sal, pimenta e cúrcuma a gosto','1 fio de azeite'],
+    prep:['SUCO: bata todos os ingredientes no liquidificador. Beba sem peneirar.','OVOS: bata os ovos com sal, pimenta e cúrcuma.','Aqueça frigideira em fogo BAIXO com azeite.','Despeje e mexa delicadamente com espátula.','Retire do fogo levemente úmidos.','Sirva o suco e os ovos juntos.'],
+    tip:'O pepino tem ação diurética e é 96% água. A hortelã relaxa a musculatura intestinal, aliviando gases. A cúrcuma + pimenta-do-reino aumenta a absorção da curcumina em até 2.000%.' },
+  { n:5, emoji:'🥣', title:'Mingau de Claras com Frutas', sub:'Reconforto quente, digestão suave',
+    ingredients:['2 col. sopa de farelo de aveia (±30 g)','200 ml de água ou leite vegetal','3 claras de ovos','1 fruta cozida: ½ maçã, pêra, banana, 10 morangos ou 1 rodela de abacaxi','Canela em pó a gosto','Cardamomo e erva-doce — 1 pitada cada'],
+    prep:['Cozinhe a fruta picada com especiarias em pouca água até amolecer.','Misture aveia e água numa panela. Fogo médio, mexendo sempre.','Quando engrossar e ferver, acrescente as 3 claras.','Mexa rapidamente por 1 min — as claras cremificam o mingau.','Retire, tampe e descanse 3 min.','Monte: mingau na base, fruta cozida por cima e mais canela.'],
+    tip:'Claras têm score PDCAAS 1,0 — a maior pontuação de qualidade proteica possível. A fruta COZIDA tem fibras pré-digeridas pelo calor, reduzindo fermentação e gases no intestino.' },
+  { n:6, emoji:'🍛', title:'Kichari Ayurvédico', sub:'Receita milenar de detox e equilíbrio',
+    ingredients:['40 g de lentilha rosa (molho na véspera)','50 g de arroz basmati','100 g de chuchu picado','100 g de abobrinha picada','1 col. chá de manteiga ghee ou azeite','½ col. chá de sementes de erva-doce','½ col. chá de sementes de cominho','½ col. chá de gengibre fresco ralado','½ col. chá de açafrão/cúrcuma em pó','½ col. chá de coentro em pó','Sal marinho a gosto'],
+    prep:['VÉSPERA: lentilha de molho em água fria por 8h. Escorra antes de usar.','Aqueça ghee. Adicione sementes de erva-doce e cominho. Doure 1 min.','Adicione arroz, lentilha e demais temperos. Refogue 2 min.','Cubra com água (cobrir + 3 cm). Leve à fervura.','Quando ferver, adicione chuchu e abobrinha. Reduza o fogo.','Cozinhe mexendo às vezes até ficar cremoso (15–20 min).'],
+    tip:'Na medicina ayurvédica, o Kichari é "o alimento perfeito": arroz + lentilha formam proteína completa de fácil digestão. A curcumina inibe o fator NF-kB, principal regulador da inflamação crônica — com mais de 6.000 estudos publicados.' },
+  { n:7, emoji:'🎉', title:'Tapioca de Frango Detox', sub:'Parabéns! Você chegou ao Dia 7!',
+    ingredients:['2 col. sopa de goma de tapioca (±40 g)','1 col. rasa de sementes de chia','80 g de frango desfiado cozido','1 tomate pequeno picado','Salsinha, cebolinha, cúrcuma, orégano, sal a gosto','Opcional: pepino e folhas verdes para acompanhar'],
+    prep:['Cozinhe o frango com temperos, desfie e misture com tomate e ervas.','Misture goma de tapioca com chia em um prato.','Forre frigideira antiaderente (sem untar) com essa mistura.','Fogo baixo, sem mexer, até firmar e soltar (2–3 min).','Vire — a chia cria textura crocante por fora.','Recheie com o frango e feche ao meio. Comemore! 🎉'],
+    tip:'🌟 PARABÉNS pelos 7 dias! A chia forma um gel mucilaginoso protetor para a mucosa intestinal e é rica em ômega-3 ALA anti-inflamatório. A tapioca é um dos carboidratos mais gentis para a digestão — você merece essa celebração!' },
 ];
 
-// ═══════════════════════════════════════════════════════════════
-// ESTADO
-// ═══════════════════════════════════════════════════════════════
-let currentUser   = null;   // { name, email, id }
+const SHOPPING = [
+  { cat:'🥦 Frutas e Verduras', items:[
+    {id:'abacaxi',   name:'Abacaxi',               note:'dias 1, 4 e 5'},
+    {id:'mamao',     name:'Mamão papaia ou kiwi',   note:'dia 1'},
+    {id:'couve',     name:'Couve (folhas)',          note:'dias 1 e 4'},
+    {id:'pepino',    name:'Pepino',                 note:'dias 1 e 4'},
+    {id:'hortela',   name:'Hortelã fresca',          note:'dias 1 e 4'},
+    {id:'gengibre',  name:'Gengibre fresco',         note:'dias 1, 4 e 6'},
+    {id:'limao',     name:'Limão',                  note:'rotina diária — jejum'},
+    {id:'aipo',      name:'Aipo (salsão)',           note:'dia 2'},
+    {id:'cenoura',   name:'Cenoura',                note:'dia 2'},
+    {id:'cebola',    name:'Cebola',                 note:'dia 2'},
+    {id:'alho',      name:'Alho',                   note:'dia 2'},
+    {id:'tomilho',   name:'Tomilho fresco',          note:'dia 2'},
+    {id:'banana',    name:'Banana',                 note:'dias 3 e 5'},
+    {id:'maca',      name:'Maçã ou pêra',           note:'dia 5'},
+    {id:'chuchu',    name:'Chuchu',                 note:'dia 6'},
+    {id:'abobrinha', name:'Abobrinha',              note:'dia 6'},
+    {id:'tomate',    name:'Tomate',                 note:'dia 7'},
+  ]},
+  { cat:'🥩 Proteínas', items:[
+    {id:'pe_frango', name:'Pé de frango (1 kg)',    note:'dia 2 — caldo de ossos'},
+    {id:'ovos',      name:'Ovos (dúzia)',            note:'dias 3, 4 e 5'},
+    {id:'frango',    name:'Peito de frango',         note:'dia 7'},
+  ]},
+  { cat:'🌾 Cereais e Grãos', items:[
+    {id:'aveia',    name:'Farelo de aveia',          note:'dias 3 e 5'},
+    {id:'lentilha', name:'Lentilha rosa',            note:'dia 6 — deixar de molho na véspera'},
+    {id:'arroz',    name:'Arroz basmati',            note:'dia 6'},
+    {id:'tapioca',  name:'Goma de tapioca',          note:'dia 7'},
+  ]},
+  { cat:'🫙 Temperos e Especiarias', items:[
+    {id:'sal',       name:'Sal marinho',             note:''},
+    {id:'pimenta',   name:'Pimenta-do-reino',        note:''},
+    {id:'curcuma',   name:'Açafrão/cúrcuma em pó',  note:'dias 4, 6 e 7'},
+    {id:'canela',    name:'Canela em pó',            note:'dias 3 e 5'},
+    {id:'cardamomo', name:'Cardamomo em pó',         note:'dia 5'},
+    {id:'erva_doce', name:'Sementes de erva-doce',   note:'dia 6'},
+    {id:'cominho',   name:'Sementes de cominho',     note:'dia 6'},
+    {id:'coentro_p', name:'Coentro em pó',           note:'dia 6'},
+    {id:'oregano',   name:'Orégano seco',            note:'dias 2 e 7'},
+    {id:'louro',     name:'Folhas de louro',         note:'dia 2'},
+    {id:'salsinha',  name:'Salsinha e cebolinha',    note:'dias 2 e 7'},
+  ]},
+  { cat:'🫒 Outros', items:[
+    {id:'azeite',    name:'Azeite de oliva extra virgem', note:''},
+    {id:'ghee',      name:'Manteiga ghee',           note:'opcional — dias 3 e 6'},
+    {id:'vinagre',   name:'Vinagre de maçã',         note:'dia 2'},
+    {id:'chia',      name:'Sementes de chia',        note:'dia 7'},
+    {id:'agua_coco', name:'Água de coco',            note:'opcional — dia 1'},
+    {id:'stevia',    name:'Adoçante stevia',         note:'opcional — dia 3'},
+  ]},
+];
+
+// STATE
+let currentUser   = null;
 let completedDays = new Set();
+let boughtItems   = new Set();
+let bonusChecked  = new Set();
 let viewingDay    = null;
 
-// ═══════════════════════════════════════════════════════════════
-// UTILITÁRIOS
-// ═══════════════════════════════════════════════════════════════
+// UTILS
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3200);
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
-
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  const withNav = ['screen-dashboard','screen-shopping','screen-bonus'].includes(id);
+  document.getElementById('bottom-nav').classList.toggle('visible', withNav);
   window.scrollTo(0, 0);
 }
+function navTo(dest) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  if (dest === 'dashboard') { renderDashboard(); showScreen('screen-dashboard'); document.getElementById('nav-inicio').classList.add('active'); }
+  else if (dest === 'shopping') { renderShopping(); showScreen('screen-shopping'); document.getElementById('nav-compras').classList.add('active'); }
+  else if (dest === 'bonus') { renderBonus(); showScreen('screen-bonus'); document.getElementById('nav-bonus').classList.add('active'); }
+}
 
-function lsKey(email) { return 'detox7__' + email.toLowerCase(); }
-
+// LOCALSTORAGE
+function lsKey(e) { return 'detox7__' + e.toLowerCase(); }
 function lsSave() {
   if (!currentUser) return;
   localStorage.setItem(lsKey(currentUser.email), JSON.stringify({
-    name: currentUser.name,
-    email: currentUser.email,
-    id: currentUser.id,
-    done: [...completedDays],
+    name: currentUser.name, email: currentUser.email, id: currentUser.id,
+    done: [...completedDays], bought: [...boughtItems], bonusChecked: [...bonusChecked],
   }));
 }
+function lsLoad(email) { const r = localStorage.getItem(lsKey(email)); return r ? JSON.parse(r) : null; }
 
-function lsLoad(email) {
-  const raw = localStorage.getItem(lsKey(email));
-  return raw ? JSON.parse(raw) : null;
-}
-
-// ═══════════════════════════════════════════════════════════════
 // SUPABASE AUTH
-// ═══════════════════════════════════════════════════════════════
-async function sbSignIn(email, password) {
-  return sb.auth.signInWithPassword({ email, password });
-}
-
-async function sbSignUp(name, email, password) {
-  return sb.auth.signUp({ email, password, options: { data: { name } } });
-}
-
+async function sbSignIn(e, p) { return sb.auth.signInWithPassword({ email:e, password:p }); }
+async function sbSignUp(n, e, p) { return sb.auth.signUp({ email:e, password:p, options:{ data:{ name:n } } }); }
 async function sbUpsertProfile(name) {
   if (!sb) return;
-  const { data: { user } } = await sb.auth.getUser();
-  if (!user) return;
-  await sb.from('detox_profiles').upsert({ id: user.id, name }, { onConflict: 'id' });
+  const { data:{ user } } = await sb.auth.getUser();
+  if (user) await sb.from('detox_profiles').upsert({ id:user.id, name }, { onConflict:'id' });
 }
-
 async function sbLoadProgress() {
   if (!sb) return [];
   const { data } = await sb.from('detox_progress').select('day_number').eq('completed', true);
-  return (data || []).map(r => r.day_number);
+  return (data||[]).map(r => r.day_number);
 }
-
 async function sbSaveProgress(dayNum) {
   if (!sb) return;
-  const { data: { user } } = await sb.auth.getUser();
+  const { data:{ user } } = await sb.auth.getUser();
   if (!user) return;
   await sb.from('detox_progress').upsert(
-    { user_id: user.id, day_number: dayNum, completed: true, completed_at: new Date().toISOString() },
-    { onConflict: 'user_id,day_number' }
+    { user_id:user.id, day_number:dayNum, completed:true, completed_at:new Date().toISOString() },
+    { onConflict:'user_id,day_number' }
   );
 }
 
-// ═══════════════════════════════════════════════════════════════
-// LOGIN
-// ═══════════════════════════════════════════════════════════════
+// LOGIN / LOGOUT
 async function handleLogin() {
   const name     = document.getElementById('inp-name').value.trim();
   const email    = document.getElementById('inp-email').value.trim().toLowerCase();
   const password = document.getElementById('inp-password').value;
-
-  if (!name)                              return showToast('⚠️ Digite seu nome!');
-  if (!email || !email.includes('@'))     return showToast('⚠️ E-mail inválido!');
-  if (!password || password.length < 6)  return showToast('⚠️ Senha com mínimo 6 caracteres!');
+  if (!name)                             return showToast('⚠️ Digite seu nome!');
+  if (!email || !email.includes('@'))    return showToast('⚠️ E-mail inválido!');
+  if (!password || password.length < 6) return showToast('⚠️ Senha com mínimo 6 caracteres!');
 
   initSupabase();
-
   const btn = document.getElementById('btn-login');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loader"></span>&nbsp;Entrando…';
+  btn.disabled = true; btn.innerHTML = '<span class="loader"></span>&nbsp;Entrando…';
 
   let done = [];
   currentUser = { name, email, id: null };
-
   try {
     if (sb) {
-      // Tenta login; se falhar, cria conta nova
       let { data, error } = await sbSignIn(email, password);
-
       if (error) {
         const signup = await sbSignUp(name, email, password);
-        if (signup.error) {
-          showToast('⚠️ ' + (signup.error.message || 'Erro ao criar conta'));
-          btn.disabled = false;
-          btn.innerHTML = 'Começar minha jornada →';
-          return;
-        }
+        if (signup.error) { showToast('⚠️ ' + (signup.error.message||'Erro ao criar conta')); btn.disabled=false; btn.innerHTML='Entrar / Criar conta →'; return; }
         data = signup.data;
       }
-
-      if (data?.user) {
-        currentUser = { name, email, id: data.user.id };
-        await sbUpsertProfile(name);
-        done = await sbLoadProgress();
-      }
+      if (data?.user) { currentUser = { name, email, id:data.user.id }; await sbUpsertProfile(name); done = await sbLoadProgress(); }
     }
-  } catch(e) {
-    console.warn('Supabase err:', e);
-  }
+  } catch(e) { console.warn(e); }
 
-  // Mescla com localStorage
   const local = lsLoad(email);
-  if (local?.done) done = [...new Set([...done, ...local.done])];
-
+  if (local?.done)         done         = [...new Set([...done, ...(local.done||[])])];
+  if (local?.bought)       boughtItems  = new Set(local.bought);
+  if (local?.bonusChecked) bonusChecked = new Set(local.bonusChecked);
   completedDays = new Set(done);
   lsSave();
-
-  btn.disabled = false;
-  btn.innerHTML = 'Começar minha jornada →';
-
-  renderDashboard();
-  showScreen('screen-dashboard');
+  btn.disabled = false; btn.innerHTML = 'Entrar / Criar conta →';
+  navTo('dashboard');
 }
-
 async function handleLogout() {
   if (!confirm('Sair? Seu progresso está salvo.')) return;
-  if (sb) await sb.auth.signOut().catch(() => {});
-  currentUser   = null;
-  completedDays = new Set();
-  showScreen('screen-login');
+  if (sb) await sb.auth.signOut().catch(()=>{});
+  currentUser=null; completedDays=new Set(); boughtItems=new Set(); bonusChecked=new Set();
+  showScreen('screen-welcome');
 }
 
-// ═══════════════════════════════════════════════════════════════
 // DASHBOARD
-// ═══════════════════════════════════════════════════════════════
 function renderDashboard() {
   const firstName = currentUser.name.split(' ')[0];
-  document.getElementById('wb-name').textContent   = firstName + '! 🌿';
-  document.getElementById('hdr-user').textContent  = firstName + ' · Sair';
-
-  const done = completedDays.size;
-  const pct  = Math.round((done / 7) * 100);
-  document.getElementById('pb-fill').style.width   = pct + '%';
-  document.getElementById('pb-label').textContent  = done + ' de 7 dias concluídos (' + pct + '%)';
-
-  document.getElementById('all-done-wrap').style.display = done === 7 ? 'block' : 'none';
-
+  document.getElementById('wb-name').textContent  = firstName + '! 🌿';
+  document.getElementById('hdr-user').textContent = firstName + ' · Sair';
+  const done = completedDays.size, pct = Math.round((done/7)*100);
+  document.getElementById('pb-fill').style.width  = pct+'%';
+  document.getElementById('pb-label').textContent = done+' de 7 dias concluídos ('+pct+'%)';
+  document.getElementById('all-done-wrap').style.display = done===7?'block':'none';
   const list = document.getElementById('days-list');
   list.innerHTML = '';
-
   DAYS.forEach(day => {
-    const isCompleted = completedDays.has(day.n);
-    const isUnlocked  = day.n === 1 || completedDays.has(day.n - 1) || isCompleted;
-    const isCurrent   = isUnlocked && !isCompleted;
-
+    const isC = completedDays.has(day.n);
+    const isU = day.n===1 || completedDays.has(day.n-1) || isC;
     const card = document.createElement('div');
-    card.className = 'day-card' +
-      (isCompleted ? ' done' : '') +
-      (!isUnlocked ? ' locked' : '') +
-      (isCurrent ? ' current' : '');
-
-    const badgeCls = isCompleted ? 'done-b' : (!isUnlocked ? 'lock-b' : 'todo-b');
-    const badgeTxt = isCompleted ? '✓'       : (!isUnlocked ? '🔒'     : '→');
-    const iconCls  = isUnlocked ? 'unlocked' : 'locked-icon';
-
-    card.innerHTML = `
-      <div class="dc-icon ${iconCls}">${isUnlocked ? day.emoji : '🔒'}</div>
-      <div class="dc-info">
-        <div class="dc-num">Dia ${day.n}</div>
-        <div class="dc-title">${day.title}</div>
-        <div class="dc-sub">${day.sub}</div>
-      </div>
-      <div class="dc-badge ${badgeCls}">${badgeTxt}</div>
-    `;
-
-    if (isUnlocked) card.onclick = () => openDay(day.n);
+    card.className = 'day-card'+(isC?' done':'')+((!isU)?' locked':'')+(isU&&!isC?' current':'');
+    card.innerHTML = `<div class="dc-icon ${isU?'unlocked':'locked-icon'}">${isU?day.emoji:'🔒'}</div><div class="dc-info"><div class="dc-num">Dia ${day.n}</div><div class="dc-title">${day.title}</div><div class="dc-sub">${day.sub}</div></div><div class="dc-badge ${isC?'done-b':(!isU?'lock-b':'todo-b')}">${isC?'✓':(!isU?'🔒':'→')}</div>`;
+    if (isU) card.onclick = () => openDay(day.n);
     list.appendChild(card);
   });
 }
+function goBack() { navTo('dashboard'); }
 
-function goBack() {
-  renderDashboard();
-  showScreen('screen-dashboard');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// DIA DETALHE
-// ═══════════════════════════════════════════════════════════════
+// DAY DETAIL
 function openDay(n) {
   viewingDay = n;
-  const d    = DAYS[n - 1];
-
-  document.getElementById('day-hdr').textContent  = 'Dia ' + n;
+  const d = DAYS[n-1];
+  document.getElementById('day-hdr').textContent  = 'Dia '+n;
   document.getElementById('dh-emoji').textContent = d.emoji;
-  document.getElementById('dh-badge').textContent = 'DIA ' + n + ' DE 7';
+  document.getElementById('dh-badge').textContent = 'DIA '+n+' DE 7';
   document.getElementById('dh-title').textContent = d.title;
   document.getElementById('dh-sub').textContent   = d.sub;
-
-  // Ingredientes
   const ingEl = document.getElementById('ing-list');
   ingEl.innerHTML = '';
   d.ingredients.forEach(item => {
     const li = document.createElement('li');
-    if (item.startsWith('──')) {
-      li.innerHTML = `<span class="ing-section-head">${item.replace(/──/g, '').trim()}</span>`;
-      li.style.cssText = 'display:block;padding:0;border:none';
-    } else {
-      li.innerHTML = `<span class="ing-dot"></span><span>${item}</span>`;
-    }
+    if (item.startsWith('──')) { li.innerHTML=`<span class="ing-section-head">${item.replace(/──/g,'').trim()}</span>`; li.style.cssText='display:block;padding:0;border:none'; }
+    else li.innerHTML = `<span class="ing-dot"></span><span>${item}</span>`;
     ingEl.appendChild(li);
   });
-
-  // Preparo
-  const prepEl = document.getElementById('prep-list');
-  prepEl.innerHTML = d.prep.map((s, i) =>
-    `<li><span class="step-n">${i + 1}</span><span>${s}</span></li>`
-  ).join('');
-
-  // Dica
+  document.getElementById('prep-list').innerHTML = d.prep.map((s,i) => `<li><span class="step-n">${i+1}</span><span>${s}</span></li>`).join('');
   document.getElementById('tip-box').textContent = d.tip;
-
-  // Botão
   const done = completedDays.has(n);
   const btn  = document.getElementById('btn-complete');
-  btn.className = 'btn-complete ' + (done ? 'done-btn' : 'todo');
-  btn.innerHTML = done ? '✓ Dia concluído!' : '✓ Completei o dia de hoje!';
+  btn.className = 'btn-complete '+(done?'done-btn':'todo');
+  btn.innerHTML = done?'✓ Dia concluído!':'✓ Completei o dia de hoje!';
   btn.disabled  = done;
-
   showScreen('screen-day');
 }
-
-// ═══════════════════════════════════════════════════════════════
-// MARCAR COMPLETO
-// ═══════════════════════════════════════════════════════════════
 async function markComplete() {
-  const n   = viewingDay;
+  const n = viewingDay;
   if (completedDays.has(n)) return;
-
   const btn = document.getElementById('btn-complete');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="loader"></span>&nbsp;Salvando…';
-
+  btn.disabled=true; btn.innerHTML='<span class="loader"></span>&nbsp;Salvando…';
   completedDays.add(n);
-
-  try {
-    if (sb) await sbSaveProgress(n);
-  } catch(e) { console.warn('Supabase save err:', e); }
-
+  try { if (sb) await sbSaveProgress(n); } catch(e) {}
   lsSave();
-
-  btn.className = 'btn-complete done-btn';
-  btn.innerHTML = '✓ Dia concluído!';
-  btn.disabled  = true;
-
-  const msg = n === 7
-    ? '🎉 Parabéns! Você completou os 7 dias da Fase de Ataque!'
-    : '🌿 Dia ' + n + ' concluído! Dia ' + (n + 1) + ' desbloqueado!';
-  showToast(msg);
+  btn.className='btn-complete done-btn'; btn.innerHTML='✓ Dia concluído!'; btn.disabled=true;
+  showToast(n===7?'🎉 Parabéns! 7 dias completos!':'🌿 Dia '+n+' concluído! Dia '+(n+1)+' desbloqueado!');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// INICIALIZAÇÃO
-// ═══════════════════════════════════════════════════════════════
+// SHOPPING
+function renderShopping() {
+  const total = SHOPPING.reduce((a,c) => a+c.items.length, 0);
+  const bought = boughtItems.size;
+  document.getElementById('shop-pb').style.width       = Math.round((bought/total)*100)+'%';
+  document.getElementById('shop-pb-label').textContent = bought+' de '+total+' itens marcados';
+  const list = document.getElementById('shop-list');
+  list.innerHTML = '';
+  SHOPPING.forEach(cat => {
+    const sec = document.createElement('div');
+    sec.className = 'shop-category';
+    sec.innerHTML = `<div class="shop-cat-header">${cat.cat}</div>`;
+    cat.items.forEach(item => {
+      const isBought = boughtItems.has(item.id);
+      const div = document.createElement('div');
+      div.className = 'shop-item'+(isBought?' bought':'');
+      div.innerHTML = `<div class="shop-check">${isBought?'✓':''}</div><div class="shop-item-info"><div class="shop-item-name">${item.name}</div>${item.note?`<div class="shop-item-note">${item.note}</div>`:''}</div>`;
+      div.onclick = () => toggleBought(item.id);
+      sec.appendChild(div);
+    });
+    list.appendChild(sec);
+  });
+}
+function toggleBought(id) { if (boughtItems.has(id)) boughtItems.delete(id); else boughtItems.add(id); lsSave(); renderShopping(); }
+function clearShopping() { if (!confirm('Limpar todos os itens marcados?')) return; boughtItems.clear(); lsSave(); renderShopping(); }
+
+// BONUS
+function renderBonus() {
+  ['checklist-sabado','checklist-domingo'].forEach(lid => {
+    document.getElementById(lid)?.querySelectorAll('li').forEach(li => {
+      li.classList.toggle('checked', bonusChecked.has(li.dataset.id));
+    });
+  });
+}
+function toggleBonus(li) {
+  const id = li.dataset.id;
+  if (bonusChecked.has(id)) { bonusChecked.delete(id); li.classList.remove('checked'); }
+  else { bonusChecked.add(id); li.classList.add('checked'); }
+  lsSave();
+}
+
+// INIT
 window.addEventListener('load', async () => {
   initSupabase();
-
-  // 1. Tenta sessão ativa do Supabase Auth
   if (sb) {
     try {
-      const { data: { session } } = await sb.auth.getSession();
+      const { data:{ session } } = await sb.auth.getSession();
       if (session?.user) {
-        const u     = session.user;
-        const email = u.email;
-        const local = lsLoad(email);
-        const name  = u.user_metadata?.name || local?.name || email.split('@')[0];
-        currentUser = { name, email, id: u.id };
-        const sbDone = await sbLoadProgress();
-        const allDone = [...new Set([...sbDone, ...(local?.done || [])])];
-        completedDays = new Set(allDone);
-        lsSave();
-        renderDashboard();
-        showScreen('screen-dashboard');
-        return;
+        const u = session.user;
+        const local = lsLoad(u.email);
+        const name = u.user_metadata?.name || local?.name || u.email.split('@')[0];
+        currentUser   = { name, email:u.email, id:u.id };
+        completedDays = new Set([...await sbLoadProgress(), ...(local?.done||[])]);
+        boughtItems   = new Set(local?.bought||[]);
+        bonusChecked  = new Set(local?.bonusChecked||[]);
+        lsSave(); navTo('dashboard'); return;
       }
-    } catch(e) { console.warn('Session check err:', e); }
+    } catch(e) {}
   }
-
-  // 2. Fallback: localStorage
   const keys = Object.keys(localStorage).filter(k => k.startsWith('detox7__'));
   if (keys.length) {
-    const data = lsLoad(keys[keys.length - 1].replace('detox7__', ''));
+    const data = lsLoad(keys[keys.length-1].replace('detox7__',''));
     if (data?.email && data?.name) {
-      currentUser   = { name: data.name, email: data.email, id: data.id || null };
-      completedDays = new Set(data.done || []);
-      renderDashboard();
-      showScreen('screen-dashboard');
-      return;
+      currentUser   = { name:data.name, email:data.email, id:data.id||null };
+      completedDays = new Set(data.done||[]);
+      boughtItems   = new Set(data.bought||[]);
+      bonusChecked  = new Set(data.bonusChecked||[]);
+      navTo('dashboard'); return;
     }
   }
-
-  showScreen('screen-login');
+  showScreen('screen-welcome');
 });
 
-// Enter no formulário de login
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('screen-login').classList.contains('active')) {
-    handleLogin();
-  }
+  if (e.key==='Enter' && document.getElementById('screen-login').classList.contains('active')) handleLogin();
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" async></script>
